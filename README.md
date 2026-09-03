@@ -1,59 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Portfolio CMS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A personal portfolio site, rebuilt from a static React SPA into a dynamic, CMS-driven application. Content (projects, skills, experience, blog posts, etc.) is managed through a Filament admin panel and served to a Vue.js + Inertia.js frontend.
 
-## About Laravel
+**Stack:** Laravel 13 · Filament 5 · Vue 3 + Inertia.js · Tailwind CSS · MySQL
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Prerequisites
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.3+
+- Composer
+- Node.js 18+ and npm
+- MySQL (or another Laravel-supported database)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Setup
 
-## Learning Laravel
+1. **Install PHP dependencies**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+   ```sh
+   composer install
+   ```
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. **Install JS dependencies**
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+   ```sh
+   npm install
+   ```
 
-## Agentic Development
+3. **Environment file**
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+   ```sh
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-```bash
-composer require laravel/boost --dev
+   Edit `.env` and set your database credentials (`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`). The default `MAIL_MAILER=log` writes contact-form emails to `storage/logs/laravel.log` instead of actually sending — swap in real SMTP credentials when you're ready to send for real.
 
-php artisan boost:install
+4. **Create the database**, then run migrations:
+
+   ```sh
+   php artisan migrate
+   ```
+
+5. **Link storage** (required — profile photos, project screenshots, blog images, and certificates are all served from here):
+
+   ```sh
+   php artisan storage:link
+   ```
+
+6. **Create a Filament admin user**
+
+   ```sh
+   php artisan make:filament-user
+   ```
+
+7. **Build frontend assets**
+
+   ```sh
+   npm run dev    # local development, with hot reload
+   # or
+   npm run build  # production build
+   ```
+
+8. **Serve the app**
+
+   ```sh
+   php artisan serve
+   ```
+
+The public site is at `/`, and the admin panel is at `/admin`.
+
+## Content Management
+
+All portfolio content is managed from the Filament admin panel (`/admin`): profile info, skills, tech stack, gallery images, work experience, projects, education, certifications, blog posts, contact info, social links, and site settings. Contact form submissions received from the public site also appear there, with reply and read/unread actions.
+
+## Contact Form & Queues
+
+The contact form saves each submission to the database and queues an email notification to the address set on your Profile record (or `MAIL_FROM_ADDRESS` as a fallback). Because `QUEUE_CONNECTION=database` by default, queued jobs sit in the `jobs` table until a worker processes them:
+
+```sh
+php artisan queue:work
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Without a running worker, contact-form notification emails will not send. For local testing without a worker, you can temporarily set `QUEUE_CONNECTION=sync` in `.env`.
 
-## Contributing
+## Notes
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# portfolio_cms
+- **No server-side rendering**: this is a client-rendered Inertia app (matching the original React SPA it was rebuilt from). Per-page `<title>`/meta tags are set client-side, so they're visible to browsers and JS-executing crawlers, but not to a raw `curl`/View Source of the initial HTML response. Add Inertia SSR later if that becomes a requirement.
+- The `_react-reference/` folder (if still present) is the original static React site used as a design reference during the rebuild. It is not part of the application and can be deleted once you're done comparing against it.

@@ -5,6 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#1a1a2e">
 
+        <!-- Favicon & App Icons -->
+        <link rel="icon" type="image/webp" href="/favicon.webp">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link rel="manifest" href="/manifest.json">
+
+        <script>
+            (function () {
+                const stored = localStorage.getItem('portfolio-theme');
+                const theme = stored === 'light' ? 'light' : 'dark';
+                document.documentElement.classList.add(theme);
+            })();
+        </script>
+
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
@@ -16,14 +29,6 @@
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
-
-        <script>
-            (function () {
-                const stored = localStorage.getItem('portfolio-theme');
-                const theme = stored === 'light' ? 'light' : 'dark';
-                document.documentElement.classList.add(theme);
-            })();
-        </script>
     </head>
     <body class="font-sans antialiased">
         @inertia
