@@ -51,7 +51,7 @@ const seoDescription = computed(() => props.profile?.tagline || props.profile?.b
     />
 
     <div class="min-h-screen bg-background overflow-x-hidden">
-        <Navigation :resume-url="profile?.resume_file" :logo-url="profile?.profile_photo" />
+        <Navigation :resume-url="profile?.resume_file" />
 
         <Hero :name="profile?.name" :bio="profile?.bio" :resume-url="profile?.resume_file" />
 

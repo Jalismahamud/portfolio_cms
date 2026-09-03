@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import { GraduationCap, Calendar, MapPin, Award, Book, Eye, X } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faGraduationCap, faCalendar, faLocationDot, faAward, faBook, faEye, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps({
     education: { type: Array, default: () => [] },
@@ -29,7 +30,7 @@ function formatIssueDate(date) {
                 <div class="lg:col-span-2 space-y-12">
                     <div>
                         <h3 class="text-2xl font-bold text-accent mb-6 flex items-center" data-aos="fade-up">
-                            <GraduationCap class="w-6 h-6 mr-2" />
+                            <FontAwesomeIcon :icon="faGraduationCap" class="w-6 h-6 mr-2" />
                             Formal Education
                         </h3>
 
@@ -48,15 +49,15 @@ function formatIssueDate(date) {
 
                                         <div class="space-y-2 text-sm text-muted-foreground">
                                             <div class="flex items-center space-x-2">
-                                                <Calendar class="w-4 h-4 text-accent" />
+                                                <FontAwesomeIcon :icon="faCalendar" class="w-4 h-4 text-accent" />
                                                 <span>{{ edu.start_year }}{{ edu.end_year ? ` - ${edu.end_year}` : '' }}</span>
                                             </div>
                                             <div v-if="edu.location" class="flex items-center space-x-2">
-                                                <MapPin class="w-4 h-4 text-accent" />
+                                                <FontAwesomeIcon :icon="faLocationDot" class="w-4 h-4 text-accent" />
                                                 <span>{{ edu.location }}</span>
                                             </div>
                                             <div v-if="edu.grade" class="flex items-center space-x-2">
-                                                <Award class="w-4 h-4 text-accent" />
+                                                <FontAwesomeIcon :icon="faAward" class="w-4 h-4 text-accent" />
                                                 <span>{{ edu.grade }}</span>
                                             </div>
                                         </div>
@@ -119,7 +120,7 @@ function formatIssueDate(date) {
             <!-- Certifications -->
             <div class="mt-16 xl:mt-20">
                 <h3 class="text-2xl font-bold text-accent mb-6 flex items-center" data-aos="fade-up">
-                    <Book class="w-6 h-6 mr-2" />
+                    <FontAwesomeIcon :icon="faBook" class="w-6 h-6 mr-2" />
                     Certifications
                 </h3>
 
@@ -139,6 +140,7 @@ function formatIssueDate(date) {
                             <img
                                 :src="cert.image"
                                 :alt="`${cert.title} certificate`"
+                                @error="(event) => { event.target.src = '/og-image.webp'; }"
                                 loading="lazy"
                                 decoding="async"
                                 width="400"
@@ -146,11 +148,11 @@ function formatIssueDate(date) {
                                 class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
                             />
                             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                                <Eye class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <FontAwesomeIcon :icon="faEye" class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                         </div>
                         <div v-else class="w-full h-36 sm:h-40 bg-accent/10 rounded-lg mb-4 flex items-center justify-center border border-accent/20 group-hover:border-accent/40 transition-colors flex-shrink-0">
-                            <Book class="w-10 h-10 text-accent/50" />
+                            <FontAwesomeIcon :icon="faBook" class="w-10 h-10 text-accent/50" />
                         </div>
 
                         <h4 class="font-semibold text-foreground mb-1.5 line-clamp-2 min-h-[2.75rem] group-hover:text-accent transition-colors">
@@ -158,7 +160,7 @@ function formatIssueDate(date) {
                         </h4>
                         <p class="text-accent text-sm font-medium mb-1">{{ cert.provider }}</p>
                         <p class="text-muted-foreground text-xs mb-3 flex items-center gap-1.5">
-                            <Calendar class="w-3.5 h-3.5 flex-shrink-0" />
+                            <FontAwesomeIcon :icon="faCalendar" class="w-3.5 h-3.5 flex-shrink-0" />
                             {{ formatIssueDate(cert.issue_date) }}
                         </p>
 
@@ -190,12 +192,13 @@ function formatIssueDate(date) {
                                     class="absolute top-3 right-3 p-2 rounded-full bg-card border border-border hover:bg-accent/10 transition-colors z-10"
                                     aria-label="Close"
                                 >
-                                    <X class="w-5 h-5 text-foreground" />
+                                    <FontAwesomeIcon :icon="faXmark" class="w-5 h-5 text-foreground" />
                                 </button>
                                 <div class="flex items-center justify-center h-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px]">
                                     <img
                                         :src="selectedImage"
                                         alt="Certificate preview, enlarged"
+                                        @error="(event) => { event.target.src = '/og-image.webp'; }"
                                         decoding="async"
                                         class="max-w-full max-h-[80vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
                                         @contextmenu.prevent

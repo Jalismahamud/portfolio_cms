@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { ChevronLeft, ChevronRight } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps({
     images: { type: Array, required: true }, // [{ src, alt }]
@@ -9,7 +10,14 @@ const props = defineProps({
 
 const currentIndex = ref(0);
 const isHovered = ref(false);
+const fallbackImage = '/og-image.webp';
 let intervalId = null;
+
+function useFallbackImage(event) {
+    if (event.target.src.endsWith(fallbackImage)) return;
+
+    event.target.src = fallbackImage;
+}
 
 function startAutoPlay() {
     stopAutoPlay();
@@ -62,6 +70,7 @@ onUnmounted(() => {
                     <img
                         :src="images[currentIndex].src"
                         :alt="images[currentIndex].alt"
+                        @error="useFallbackImage"
                         decoding="async"
                         class="h-full w-full object-cover"
                     />
@@ -75,7 +84,7 @@ onUnmounted(() => {
                 class="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-accent/20 hover:border-accent transition-all duration-300 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 z-10"
                 aria-label="Previous image"
             >
-                <ChevronLeft class="w-5 h-5 text-foreground" />
+                <FontAwesomeIcon :icon="faChevronLeft" class="w-5 h-5 text-foreground" />
             </button>
             <button
                 v-if="images.length > 1"
@@ -83,7 +92,7 @@ onUnmounted(() => {
                 class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-accent/20 hover:border-accent transition-all duration-300 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 z-10"
                 aria-label="Next image"
             >
-                <ChevronRight class="w-5 h-5 text-foreground" />
+                <FontAwesomeIcon :icon="faChevronRight" class="w-5 h-5 text-foreground" />
             </button>
 
             <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm border border-border text-xs text-foreground font-medium">
@@ -115,6 +124,7 @@ onUnmounted(() => {
                 <img
                     :src="image.src"
                     :alt="image.alt"
+                    @error="useFallbackImage"
                     loading="lazy"
                     decoding="async"
                     width="64"

@@ -15,7 +15,7 @@ class TechnologyForm
                     ->required()
                     ->unique(ignoreRecord: true),
                 TextInput::make('icon')
-                    ->helperText('Emoji or an image path/URL.'),
+                    ->helperText('Not currently displayed — the icon shown on the site is chosen automatically from the technology name.'),
                 TextInput::make('category'),
                 TextInput::make('sort_order')
                     ->required()

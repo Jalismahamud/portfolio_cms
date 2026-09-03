@@ -26,8 +26,8 @@ class PortfolioSeeder extends Seeder
             'name' => 'Jalis Mahamud',
             'tagline' => 'Laravel & Vue.js Full Stack Developer',
             'bio' => "Hello! I'm a passionate Laravel developer dedicated to crafting efficient and reliable web applications.\nWith extensive experience in PHP and Laravel, I specialize in building scalable, maintainable applications.\nBased in Dhaka, Bangladesh, I work remotely and enjoy taking on new challenges.",
-            'profile_photo' => 'https://placehold.co/600x600?text=Profile',
-            'resume_file' => null,
+            'profile_photo' => '/og-image.webp',
+            'resume_file' => '/storage/resume/cv.pdf',
             'location' => 'Dhaka, Bangladesh',
             'email' => 'admin@example.com',
             'phone' => '+8801700000000',
@@ -38,26 +38,26 @@ class PortfolioSeeder extends Seeder
         ]);
 
         $skills = [
-            ['icon' => 'Code2', 'title' => 'Frontend Development', 'description' => 'JavaScript, Vue.js, Tailwind and responsive design'],
-            ['icon' => 'Server', 'title' => 'Backend Development', 'description' => 'PHP, Laravel, RESTful APIs'],
-            ['icon' => 'Database', 'title' => 'Database Design', 'description' => 'SQL and NoSQL database optimization'],
-            ['icon' => 'Globe', 'title' => 'Web Technologies', 'description' => 'Full-stack web application development'],
-            ['icon' => 'Smartphone', 'title' => 'Mobile Development', 'description' => 'Progressive web apps'],
-            ['icon' => 'GitBranch', 'title' => 'DevOps & Tools', 'description' => 'CI/CD, Docker, cloud deployment'],
+            ['icon' => 'code', 'title' => 'Frontend Development', 'description' => 'JavaScript, Vue.js, Tailwind and responsive design'],
+            ['icon' => 'server', 'title' => 'Backend Development', 'description' => 'PHP, Laravel, RESTful APIs'],
+            ['icon' => 'database', 'title' => 'Database Design', 'description' => 'SQL and NoSQL database optimization'],
+            ['icon' => 'globe', 'title' => 'Web Technologies', 'description' => 'Full-stack web application development'],
+            ['icon' => 'mobile-screen', 'title' => 'Mobile Development', 'description' => 'Progressive web apps'],
+            ['icon' => 'code-branch', 'title' => 'DevOps & Tools', 'description' => 'CI/CD, Docker, cloud deployment'],
         ];
         foreach ($skills as $i => $skill) {
             Skill::updateOrCreate(['title' => $skill['title']], [...$skill, 'sort_order' => $i]);
         }
 
         $techList = [
-            ['name' => 'PHP', 'icon' => '🐘', 'category' => 'Backend'],
-            ['name' => 'Laravel', 'icon' => '🔴', 'category' => 'Backend'],
-            ['name' => 'Vue.js', 'icon' => '🟢', 'category' => 'Frontend'],
-            ['name' => 'JavaScript', 'icon' => '🟨', 'category' => 'Frontend'],
-            ['name' => 'Tailwind CSS', 'icon' => '💨', 'category' => 'Frontend'],
-            ['name' => 'MySQL', 'icon' => '🐬', 'category' => 'Database'],
-            ['name' => 'Git', 'icon' => '📚', 'category' => 'Tools'],
-            ['name' => 'REST APIs', 'icon' => '🔗', 'category' => 'Backend'],
+            ['name' => 'PHP', 'icon' => 'php', 'category' => 'Backend'],
+            ['name' => 'Laravel', 'icon' => 'laravel', 'category' => 'Backend'],
+            ['name' => 'Vue.js', 'icon' => 'vuejs', 'category' => 'Frontend'],
+            ['name' => 'JavaScript', 'icon' => 'js', 'category' => 'Frontend'],
+            ['name' => 'Tailwind CSS', 'icon' => 'css3-alt', 'category' => 'Frontend'],
+            ['name' => 'MySQL', 'icon' => 'database', 'category' => 'Database'],
+            ['name' => 'Git', 'icon' => 'git-alt', 'category' => 'Tools'],
+            ['name' => 'REST APIs', 'icon' => 'cloud', 'category' => 'Backend'],
         ];
         $technologies = collect();
         foreach ($techList as $i => $tech) {

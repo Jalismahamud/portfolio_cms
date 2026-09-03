@@ -1,8 +1,10 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
-import { Mail, Phone, MapPin, Send } from '@lucide/vue';
-import { GithubIcon, LinkedinIcon, TwitterIcon, InstagramIcon, FacebookIcon, FiverrIcon, MediumIcon, StackOverflowIcon } from './icons/BrandIcons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { resolveSocialMeta } from '@/Composables/useSocialIcon';
+import { resolveContactIcon } from '@/Composables/useContactIcon';
 import Toast from './Toast.vue';
 
 const props = defineProps({
@@ -10,23 +12,6 @@ const props = defineProps({
     socialLinks: { type: Array, default: () => [] }, // [{ platform_name, href }]
     ownerName: { type: String, default: '' },
 });
-
-const iconMap = { Mail, Phone, MapPin };
-
-const socialIconMap = {
-    GitHub: { icon: GithubIcon, color: 'hover:text-accent hover:border-accent/50', bgHover: 'hover:bg-accent/10' },
-    LinkedIn: { icon: LinkedinIcon, color: 'hover:text-blue-400 hover:border-blue-400/50', bgHover: 'hover:bg-blue-400/10' },
-    Twitter: { icon: TwitterIcon, color: 'hover:text-sky-400 hover:border-sky-400/50', bgHover: 'hover:bg-sky-400/10' },
-    Instagram: { icon: InstagramIcon, color: 'hover:text-pink-500 hover:border-pink-500/50', bgHover: 'hover:bg-pink-500/10' },
-    Facebook: { icon: FacebookIcon, color: 'hover:text-blue-500 hover:border-blue-500/50', bgHover: 'hover:bg-blue-500/10' },
-    Fiverr: { icon: FiverrIcon, color: 'hover:text-green-500 hover:border-green-500/50', bgHover: 'hover:bg-green-500/10' },
-    Medium: { icon: MediumIcon, color: 'hover:text-foreground hover:border-foreground/50', bgHover: 'hover:bg-foreground/10' },
-    StackOverflow: { icon: StackOverflowIcon, color: 'hover:text-orange-500 hover:border-orange-500/50', bgHover: 'hover:bg-orange-500/10' },
-};
-
-function socialMeta(platform) {
-    return socialIconMap[platform] || { icon: GithubIcon, color: 'hover:text-accent', bgHover: 'hover:bg-accent/10' };
-}
 
 const page = usePage();
 const form = useForm({ name: '', email: '', subject: '', message: '' });
@@ -90,7 +75,7 @@ function handleSubmit() {
                             :data-aos-delay="index * 100"
                         >
                             <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                                <component :is="iconMap[contact.icon] || Mail" class="w-6 h-6 text-accent" />
+                                <FontAwesomeIcon :icon="resolveContactIcon(contact.icon)" class="w-6 h-6 text-accent" />
                             </div>
                             <div>
                                 <p class="text-sm text-muted-foreground">{{ contact.label }}</p>
@@ -109,11 +94,11 @@ function handleSubmit() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="w-12 h-12 bg-card border border-border rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-card"
-                                :class="[socialMeta(social.platform_name).color, socialMeta(social.platform_name).bgHover]"
+                                :class="[resolveSocialMeta(social.platform_name).color, resolveSocialMeta(social.platform_name).bgHover]"
                                 :aria-label="social.platform_name"
                                 :title="social.platform_name"
                             >
-                                <component :is="socialMeta(social.platform_name).icon" class="w-6 h-6" />
+                                <FontAwesomeIcon :icon="resolveSocialMeta(social.platform_name).icon" class="w-6 h-6" />
                             </a>
                         </div>
                     </div>
@@ -183,7 +168,7 @@ function handleSubmit() {
                             :disabled="form.processing"
                             class="w-full flex items-center justify-center space-x-2 py-4 bg-accent text-accent-foreground font-semibold rounded-lg hover:shadow-lg hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                         >
-                            <Send class="w-5 h-5" />
+                            <FontAwesomeIcon :icon="faPaperPlane" class="w-5 h-5" />
                             <span>{{ form.processing ? 'Sending...' : 'Send Message' }}</span>
                         </button>
                     </form>

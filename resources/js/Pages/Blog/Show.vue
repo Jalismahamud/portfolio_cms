@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
-import { ArrowLeft, Calendar, Clock, User, Tag } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faArrowLeft, faCalendar, faClock, faUser, faTag } from '@fortawesome/free-solid-svg-icons';
 import { marked } from 'marked';
 import { truncateForMeta } from '@/Composables/useSeo';
 import Seo from '@/Components/Portfolio/Seo.vue';
@@ -57,7 +58,7 @@ function formatDate(date) {
         <div class="pt-24 section-padding">
             <div class="max-w-4xl mx-auto">
                 <Link href="/blog" class="inline-flex items-center space-x-2 text-accent hover:text-accent/80 transition-colors mb-8">
-                    <ArrowLeft class="w-5 h-5" />
+                    <FontAwesomeIcon :icon="faArrowLeft" class="w-5 h-5" />
                     <span>Back to Blog</span>
                 </Link>
 
@@ -69,15 +70,15 @@ function formatDate(date) {
 
                     <div class="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                         <span v-if="post.author" class="flex items-center gap-1">
-                            <User class="w-4 h-4" />
+                            <FontAwesomeIcon :icon="faUser" class="w-4 h-4" />
                             {{ post.author }}
                         </span>
                         <span v-if="post.published_at" class="flex items-center gap-1">
-                            <Calendar class="w-4 h-4" />
+                            <FontAwesomeIcon :icon="faCalendar" class="w-4 h-4" />
                             {{ formatDate(post.published_at) }}
                         </span>
                         <span v-if="post.read_time" class="flex items-center gap-1">
-                            <Clock class="w-4 h-4" />
+                            <FontAwesomeIcon :icon="faClock" class="w-4 h-4" />
                             {{ post.read_time }} min read
                         </span>
                     </div>
@@ -94,7 +95,7 @@ function formatDate(date) {
 
                 <div v-if="post.tags?.length" class="mt-10 pt-8 border-t border-border">
                     <div class="flex flex-wrap items-center gap-2">
-                        <Tag class="w-4 h-4 text-muted-foreground" />
+                        <FontAwesomeIcon :icon="faTag" class="w-4 h-4 text-muted-foreground" />
                         <span
                             v-for="tag in post.tags"
                             :key="tag.id"

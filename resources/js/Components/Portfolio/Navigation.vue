@@ -1,12 +1,13 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { Link, usePage, router } from '@inertiajs/vue3';
-import { Moon, Sun, Menu, X, FileDown, MessageCircle } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faMoon, faSun, faBars, faXmark, faFileArrowDown, faComment } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '@/Composables/useTheme';
 
 const props = defineProps({
     resumeUrl: { type: String, default: '/cv.pdf' },
-    logoUrl: { type: String, default: null },
+    logoUrl: { type: String, default: '/logo.webp' },
 });
 
 const navItems = [
@@ -120,6 +121,7 @@ function scrollToTop() {
                             v-if="logoUrl"
                             :src="logoUrl"
                             alt="Logo"
+                            @error="(event) => { event.target.src = '/logo.webp'; }"
                             width="96"
                             height="112"
                             class="h-28 w-24 sm:h-24 sm:w-20 animate-logo-orbit z-10 relative cursor-pointer"
@@ -149,8 +151,8 @@ function scrollToTop() {
                         :aria-expanded="isMobileMenuOpen"
                         class="lg:hidden p-2 rounded-lg bg-card border border-border hover:bg-accent/10 transition-colors"
                     >
-                        <X v-if="isMobileMenuOpen" class="w-5 h-5 text-accent" />
-                        <Menu v-else class="w-5 h-5 text-accent" />
+                        <FontAwesomeIcon v-if="isMobileMenuOpen" :icon="faXmark" class="w-5 h-5 text-accent" />
+                        <FontAwesomeIcon v-else :icon="faBars" class="w-5 h-5 text-accent" />
                     </button>
 
                     <button
@@ -158,15 +160,15 @@ function scrollToTop() {
                         :aria-label="theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
                         class="p-2 rounded-lg bg-card border border-border hover:bg-accent/10 hover:border-accent/50 transition-all duration-300"
                     >
-                        <Sun v-if="theme === 'dark'" class="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
-                        <Moon v-else class="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
+                        <FontAwesomeIcon v-if="theme === 'dark'" :icon="faSun" class="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
+                        <FontAwesomeIcon v-else :icon="faMoon" class="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
                     </button>
 
                     <button
                         @click="scrollToContact"
                         class="hidden sm:flex items-center space-x-2 px-4 py-2 bg-muted/50 border border-border rounded-lg text-sm font-medium text-muted-foreground hover:text-accent hover:border-accent/50 hover:bg-accent/5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                     >
-                        <MessageCircle class="w-4 h-4" />
+                        <FontAwesomeIcon :icon="faComment" class="w-4 h-4" />
                         <span>Get in Touch</span>
                     </button>
 
@@ -175,7 +177,7 @@ function scrollToTop() {
                         download="My-CV.pdf"
                         class="hidden sm:flex items-center space-x-2 px-4 py-2 bg-accent/10 border border-accent/50 rounded-lg text-sm font-medium text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/20"
                     >
-                        <FileDown class="w-4 h-4" />
+                        <FontAwesomeIcon :icon="faFileArrowDown" class="w-4 h-4" />
                         <span>Resume</span>
                     </a>
                 </div>
@@ -200,7 +202,7 @@ function scrollToTop() {
                             @click="scrollToContact"
                             class="flex items-center justify-center space-x-2 w-full py-3 bg-muted/50 border border-border rounded-lg text-muted-foreground hover:text-accent hover:border-accent/50 transition-all"
                         >
-                            <MessageCircle class="w-4 h-4" />
+                            <FontAwesomeIcon :icon="faComment" class="w-4 h-4" />
                             <span>Get in Touch</span>
                         </button>
                         <a
@@ -208,7 +210,7 @@ function scrollToTop() {
                             download="My-CV.pdf"
                             class="flex items-center justify-center space-x-2 w-full py-3 bg-accent/10 border border-accent/50 rounded-lg text-accent hover:bg-accent hover:text-accent-foreground transition-all"
                         >
-                            <FileDown class="w-4 h-4" />
+                            <FontAwesomeIcon :icon="faFileArrowDown" class="w-4 h-4" />
                             <span>Download Resume</span>
                         </a>
                     </div>

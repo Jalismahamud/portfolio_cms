@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { resolveTechIcon } from '@/Composables/useTechIcon';
 
 const props = defineProps({
     name: { type: String, required: true },
@@ -8,8 +10,6 @@ const props = defineProps({
 });
 
 const isHovered = ref(false);
-
-const isImageIcon = /^https?:\/\//.test(props.icon);
 </script>
 
 <template>
@@ -21,20 +21,11 @@ const isImageIcon = /^https?:\/\//.test(props.icon);
     >
         <div class="bg-secondary p-4 rounded-lg text-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-accent/20 hover:bg-accent/10 border border-transparent hover:border-accent/30">
             <div class="text-3xl mb-2 transition-all duration-300 cursor-pointer flex items-center justify-center h-12">
-                <img
-                    v-if="isImageIcon"
-                    :src="icon"
-                    :alt="`${name} icon`"
-                    loading="lazy"
-                    decoding="async"
-                    width="40"
-                    height="40"
+                <FontAwesomeIcon
+                    :icon="resolveTechIcon(name)"
                     class="w-10 h-10 object-contain transition-all duration-300"
                     :class="{ 'scale-125 drop-shadow-[0_0_8px_rgba(0,212,255,0.6)]': isHovered }"
                 />
-                <span v-else class="text-3xl transition-transform duration-300" :class="{ 'scale-125': isHovered }">
-                    {{ icon }}
-                </span>
             </div>
             <div class="text-sm font-medium text-foreground">{{ name }}</div>
             <div class="text-xs text-accent mt-1">{{ category }}</div>

@@ -1,5 +1,6 @@
 <script setup>
-import { Calendar, MapPin, ExternalLink } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faCalendar, faLocationDot, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps({
     experiences: { type: Array, default: () => [] },
@@ -40,11 +41,11 @@ function formatDuration(exp) {
 
                                 <div class="space-y-2 text-sm text-muted-foreground">
                                     <div class="flex items-center space-x-2">
-                                        <Calendar class="w-4 h-4 text-accent" />
+                                        <FontAwesomeIcon :icon="faCalendar" class="w-4 h-4 text-accent" />
                                         <span>{{ formatDuration(exp) }}</span>
                                     </div>
                                     <div v-if="exp.location" class="flex items-center space-x-2">
-                                        <MapPin class="w-4 h-4 text-accent" />
+                                        <FontAwesomeIcon :icon="faLocationDot" class="w-4 h-4 text-accent" />
                                         <span>{{ exp.location }}</span>
                                     </div>
                                     <div class="flex gap-2 mt-2">
@@ -96,7 +97,7 @@ function formatDuration(exp) {
             <!-- Download CV Button -->
             <div class="text-center mt-12">
                 <a :href="resumeUrl" download="My-CV.pdf" class="btn-outline-cyan inline-flex items-center space-x-2">
-                    <ExternalLink class="w-4 h-4" />
+                    <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="w-4 h-4" />
                     <span>Download Full CV</span>
                 </a>
             </div>

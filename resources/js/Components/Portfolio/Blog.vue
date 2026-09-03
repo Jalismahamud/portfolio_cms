@@ -1,6 +1,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
-import { Calendar, Clock, ArrowRight, BookOpen } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faCalendar, faClock, faArrowRight, faBook } from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps({
     posts: { type: Array, default: () => [] },
@@ -57,6 +58,7 @@ function formatDate(date) {
                         <img
                             :src="post.image"
                             :alt="post.title"
+                            @error="(event) => { event.target.src = '/og-image.webp'; }"
                             loading="lazy"
                             decoding="async"
                             width="500"
@@ -76,11 +78,11 @@ function formatDate(date) {
                     <div class="p-6">
                         <div class="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                             <span v-if="post.published_at" class="flex items-center gap-1">
-                                <Calendar class="w-4 h-4" />
+                                <FontAwesomeIcon :icon="faCalendar" class="w-4 h-4" />
                                 {{ formatDate(post.published_at) }}
                             </span>
                             <span v-if="post.read_time" class="flex items-center gap-1">
-                                <Clock class="w-4 h-4" />
+                                <FontAwesomeIcon :icon="faClock" class="w-4 h-4" />
                                 {{ post.read_time }} min read
                             </span>
                         </div>
@@ -93,7 +95,7 @@ function formatDate(date) {
 
                         <span class="inline-flex items-center gap-2 text-accent font-medium group-hover:gap-3 transition-all">
                             Read More
-                            <ArrowRight class="w-4 h-4" />
+                            <FontAwesomeIcon :icon="faArrowRight" class="w-4 h-4" />
                         </span>
                     </div>
                 </Link>
@@ -104,7 +106,7 @@ function formatDate(date) {
                     href="/blog"
                     class="inline-flex items-center gap-2 px-8 py-4 bg-accent/10 border border-accent/50 rounded-lg text-accent font-medium hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-accent/20"
                 >
-                    <BookOpen class="w-5 h-5" />
+                    <FontAwesomeIcon :icon="faBook" class="w-5 h-5" />
                     View All Articles
                 </Link>
             </div>

@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
-import { Home, FolderKanban, BookOpen } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faHouse, faFolderOpen, faBook } from '@fortawesome/free-solid-svg-icons';
 import Seo from '@/Components/Portfolio/Seo.vue';
 import Navigation from '@/Components/Portfolio/Navigation.vue';
 
@@ -55,21 +56,21 @@ const message = computed(() => messages[props.status] || messages[500]);
                         href="/"
                         class="inline-flex items-center gap-2 px-6 py-3 bg-accent/10 border border-accent/50 rounded-lg text-accent font-medium hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-accent/20"
                     >
-                        <Home class="w-5 h-5" />
+                        <FontAwesomeIcon :icon="faHouse" class="w-5 h-5" />
                         Back to Home
                     </Link>
                     <Link
                         href="/projects"
                         class="inline-flex items-center gap-2 px-6 py-3 bg-card border border-border rounded-lg text-foreground font-medium hover:text-accent hover:border-accent/50 transition-all duration-300"
                     >
-                        <FolderKanban class="w-5 h-5" />
+                        <FontAwesomeIcon :icon="faFolderOpen" class="w-5 h-5" />
                         View Projects
                     </Link>
                     <Link
                         href="/blog"
                         class="inline-flex items-center gap-2 px-6 py-3 bg-card border border-border rounded-lg text-foreground font-medium hover:text-accent hover:border-accent/50 transition-all duration-300"
                     >
-                        <BookOpen class="w-5 h-5" />
+                        <FontAwesomeIcon :icon="faBook" class="w-5 h-5" />
                         Read the Blog
                     </Link>
                 </div>

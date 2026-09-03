@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { ArrowUp } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 const showScrollTop = ref(false);
 
@@ -24,7 +25,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
             class="fixed bottom-8 right-8 z-50 p-3 bg-accent text-accent-foreground rounded-full shadow-lg hover:shadow-accent/30 hover:-translate-y-1 transition-all duration-300"
             aria-label="Scroll to top"
         >
-            <ArrowUp class="w-5 h-5" />
+            <FontAwesomeIcon :icon="faArrowUp" class="w-5 h-5" />
         </button>
     </Transition>
 </template>

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ContactInfos\Schemas;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -11,9 +12,14 @@ class ContactInfoForm
     {
         return $schema
             ->components([
-                TextInput::make('icon')
+                Select::make('icon')
                     ->required()
-                    ->helperText('Lucide icon name, e.g. "Mail".'),
+                    ->options([
+                        'Mail' => 'Mail',
+                        'Phone' => 'Phone',
+                        'MapPin' => 'Location',
+                    ])
+                    ->helperText('Font Awesome icon shown next to this contact detail.'),
                 TextInput::make('label')
                     ->required(),
                 TextInput::make('value')

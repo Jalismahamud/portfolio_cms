@@ -1,8 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
-import { ArrowLeft, ExternalLink, ChevronLeft, ChevronRight } from '@lucide/vue';
-import { GithubIcon } from '@/Components/Portfolio/icons/BrandIcons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faArrowLeft, faArrowUpRightFromSquare, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { truncateForMeta } from '@/Composables/useSeo';
 import Seo from '@/Components/Portfolio/Seo.vue';
 import Navigation from '@/Components/Portfolio/Navigation.vue';
@@ -59,7 +60,7 @@ function prevImage() {
         <div class="pt-24 section-padding">
             <div class="max-w-6xl mx-auto">
                 <Link href="/" class="inline-flex items-center space-x-2 text-accent hover:text-accent/80 transition-colors mb-8">
-                    <ArrowLeft class="w-5 h-5" />
+                    <FontAwesomeIcon :icon="faArrowLeft" class="w-5 h-5" />
                     <span>Back to Portfolio</span>
                 </Link>
 
@@ -69,11 +70,11 @@ function prevImage() {
 
                     <div class="flex flex-wrap gap-4">
                         <a v-if="project.live_url" :href="project.live_url" target="_blank" rel="noopener noreferrer" class="btn-outline-cyan inline-flex items-center space-x-2">
-                            <ExternalLink class="w-4 h-4" />
+                            <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="w-4 h-4" />
                             <span>Live Demo</span>
                         </a>
                         <a v-if="project.github_url" :href="project.github_url" target="_blank" rel="noopener noreferrer" class="btn-outline inline-flex items-center space-x-2">
-                            <GithubIcon class="w-4 h-4" />
+                            <FontAwesomeIcon :icon="faGithub" class="w-4 h-4" />
                             <span>View Code</span>
                         </a>
                     </div>
@@ -98,14 +99,14 @@ function prevImage() {
                                     aria-label="Previous screenshot"
                                     class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-background/80 hover:bg-background border border-border rounded-full p-2 transition-colors"
                                 >
-                                    <ChevronLeft class="w-6 h-6 text-foreground" />
+                                    <FontAwesomeIcon :icon="faChevronLeft" class="w-6 h-6 text-foreground" />
                                 </button>
                                 <button
                                     @click="nextImage"
                                     aria-label="Next screenshot"
                                     class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-background/80 hover:bg-background border border-border rounded-full p-2 transition-colors"
                                 >
-                                    <ChevronRight class="w-6 h-6 text-foreground" />
+                                    <FontAwesomeIcon :icon="faChevronRight" class="w-6 h-6 text-foreground" />
                                 </button>
                             </template>
                         </div>
@@ -169,11 +170,11 @@ function prevImage() {
                             <h3 class="text-xl font-semibold text-foreground mb-4">Project Links</h3>
                             <div class="space-y-3">
                                 <a v-if="project.live_url" :href="project.live_url" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-accent hover:text-accent/80 transition-colors">
-                                    <ExternalLink class="w-4 h-4" />
+                                    <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="w-4 h-4" />
                                     <span>Live Demo</span>
                                 </a>
                                 <a v-if="project.github_url" :href="project.github_url" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-accent hover:text-accent/80 transition-colors">
-                                    <GithubIcon class="w-4 h-4" />
+                                    <FontAwesomeIcon :icon="faGithub" class="w-4 h-4" />
                                     <span>Source Code</span>
                                 </a>
                             </div>

@@ -1,5 +1,6 @@
 <script setup>
-import { resolveLucideIcon } from '@/Composables/useLucideIcon';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { resolveSkillIcon } from '@/Composables/useFaIcon';
 import TechIcon from './TechIcon.vue';
 import ImageGallerySlider from './ImageGallerySlider.vue';
 
@@ -14,7 +15,7 @@ const props = defineProps({
 const bioParagraphs = (props.bio || '').split('\n').filter((p) => p.trim().length > 0);
 
 const sliderImages = [
-    ...(props.profilePhoto ? [{ src: props.profilePhoto, alt: 'Profile photo' }] : []),
+    [{ src: props.profilePhoto || '/og-image.webp', alt: 'Profile photo' }],
     ...props.galleryImages.map((g) => ({ src: g.image, alt: g.alt_text || 'Gallery photo' })),
 ];
 </script>
@@ -45,8 +46,8 @@ const sliderImages = [
                             :data-aos-delay="index * 100"
                         >
                             <div class="flex items-start space-x-3">
-                                <component
-                                    :is="resolveLucideIcon(skill.icon)"
+                                <FontAwesomeIcon
+                                    :icon="resolveSkillIcon(skill.icon)"
                                     class="w-6 h-6 text-accent mt-1 flex-shrink-0 group-hover:scale-110 transition-transform"
                                 />
                                 <div>

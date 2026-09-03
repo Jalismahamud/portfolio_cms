@@ -1,7 +1,8 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
-import { Calendar, Clock, ArrowRight, Search, Filter, LoaderCircle } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faCalendar, faClock, faArrowRight, faMagnifyingGlass, faFilter, faSpinner, faInbox } from '@fortawesome/free-solid-svg-icons';
 import Seo from '@/Components/Portfolio/Seo.vue';
 import Navigation from '@/Components/Portfolio/Navigation.vue';
 
@@ -97,8 +98,8 @@ function formatDate(date) {
 
                 <div class="mb-10 space-y-6" data-aos="fade-up">
                     <div class="relative max-w-xl mx-auto">
-                        <LoaderCircle v-if="isSearching" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent animate-spin" />
-                        <Search v-else class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                        <FontAwesomeIcon v-if="isSearching" :icon="faSpinner" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent animate-spin" />
+                        <FontAwesomeIcon v-else :icon="faMagnifyingGlass" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                         <input
                             v-model="searchQuery"
                             type="text"
@@ -109,7 +110,7 @@ function formatDate(date) {
 
                     <div class="flex flex-wrap items-center justify-center gap-3">
                         <div class="flex items-center gap-2 text-muted-foreground mr-2">
-                            <Filter class="w-4 h-4" />
+                            <FontAwesomeIcon :icon="faFilter" class="w-4 h-4" />
                             <span class="text-sm font-medium">Filter:</span>
                         </div>
                         <button
@@ -162,11 +163,11 @@ function formatDate(date) {
                         <div class="p-6">
                             <div class="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                                 <span v-if="post.published_at" class="flex items-center gap-1">
-                                    <Calendar class="w-4 h-4" />
+                                    <FontAwesomeIcon :icon="faCalendar" class="w-4 h-4" />
                                     {{ formatDate(post.published_at) }}
                                 </span>
                                 <span v-if="post.read_time" class="flex items-center gap-1">
-                                    <Clock class="w-4 h-4" />
+                                    <FontAwesomeIcon :icon="faClock" class="w-4 h-4" />
                                     {{ post.read_time }} min read
                                 </span>
                             </div>
@@ -179,13 +180,13 @@ function formatDate(date) {
 
                             <div class="flex items-center gap-2 text-accent font-medium text-sm group-hover:gap-3 transition-all">
                                 Read Article
-                                <ArrowRight class="w-4 h-4" />
+                                <FontAwesomeIcon :icon="faArrowRight" class="w-4 h-4" />
                             </div>
                         </div>
                     </Link>
                 </div>
                 <div v-else class="text-center py-16">
-                    <div class="text-6xl mb-4">📭</div>
+                    <FontAwesomeIcon :icon="faInbox" class="w-16 h-16 mb-4 text-muted-foreground mx-auto" />
                     <h3 class="text-xl font-semibold text-foreground mb-2">No articles found</h3>
                     <p class="text-muted-foreground">Try adjusting your search or filter criteria</p>
                 </div>

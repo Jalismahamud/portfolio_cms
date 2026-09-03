@@ -1,8 +1,9 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
-import { ExternalLink, Eye, Search, LoaderCircle } from '@lucide/vue';
-import { GithubIcon } from '@/Components/Portfolio/icons/BrandIcons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faArrowUpRightFromSquare, faEye, faMagnifyingGlass, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Seo from '@/Components/Portfolio/Seo.vue';
 import Navigation from '@/Components/Portfolio/Navigation.vue';
 
@@ -65,8 +66,8 @@ function goToProject(slug) {
 
                 <div class="mb-10" data-aos="fade-up">
                     <div class="relative max-w-xl mx-auto">
-                        <LoaderCircle v-if="isSearching" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent animate-spin" />
-                        <Search v-else class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                        <FontAwesomeIcon v-if="isSearching" :icon="faSpinner" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent animate-spin" />
+                        <FontAwesomeIcon v-else :icon="faMagnifyingGlass" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                         <input
                             v-model="searchQuery"
                             type="text"
@@ -101,7 +102,7 @@ function goToProject(slug) {
                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />
                             <div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                <Eye class="w-8 h-8 text-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-0 group-hover:scale-100" />
+                                <FontAwesomeIcon :icon="faEye" class="w-8 h-8 text-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-0 group-hover:scale-100" />
                             </div>
                             <span v-if="project.is_featured" class="absolute top-3 left-3 px-3 py-1 text-xs font-medium rounded-full border bg-accent/20 text-accent border-accent/30">
                                 Featured
@@ -137,7 +138,7 @@ function goToProject(slug) {
                                     class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
                                     aria-label="View GitHub repository"
                                 >
-                                    <GithubIcon class="w-5 h-5" />
+                                    <FontAwesomeIcon :icon="faGithub" class="w-5 h-5" />
                                 </a>
                                 <a
                                     v-if="project.live_url"
@@ -148,14 +149,14 @@ function goToProject(slug) {
                                     class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
                                     aria-label="View live project"
                                 >
-                                    <ExternalLink class="w-5 h-5" />
+                                    <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="w-5 h-5" />
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div v-else class="text-center py-16">
-                    <div class="text-6xl mb-4">🔍</div>
+                    <FontAwesomeIcon :icon="faMagnifyingGlass" class="w-16 h-16 mb-4 text-muted-foreground mx-auto" />
                     <h3 class="text-xl font-semibold text-foreground mb-2">No projects found</h3>
                     <p class="text-muted-foreground">Try a different search term</p>
                 </div>

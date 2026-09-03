@@ -1,7 +1,8 @@
 <script setup>
 import { Link, router } from '@inertiajs/vue3';
-import { ExternalLink, Eye } from '@lucide/vue';
-import { GithubIcon } from './icons/BrandIcons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faArrowUpRightFromSquare, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 const props = defineProps({
     featuredProjects: { type: Array, default: () => [] },
@@ -43,6 +44,7 @@ function goToProject(slug) {
                                     <img
                                         :src="project.images?.[0]?.image_path"
                                         :alt="`Screenshot of ${project.title}`"
+                                        @error="(event) => { event.target.src = '/og-image.webp'; }"
                                         loading="lazy"
                                         decoding="async"
                                         width="1200"
@@ -51,7 +53,7 @@ function goToProject(slug) {
                                     />
                                     <div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <div class="absolute inset-0 bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                        <Eye class="w-12 h-12 text-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-0 group-hover:scale-100" />
+                                        <FontAwesomeIcon :icon="faEye" class="w-12 h-12 text-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-0 group-hover:scale-100" />
                                     </div>
                                 </div>
                             </Link>
@@ -95,7 +97,7 @@ function goToProject(slug) {
                                     class="p-3 bg-card border border-border rounded-lg text-muted-foreground hover:text-accent hover:border-accent transition-all duration-300 hover:scale-110"
                                     aria-label="View GitHub repository"
                                 >
-                                    <GithubIcon class="w-6 h-6" />
+                                    <FontAwesomeIcon :icon="faGithub" class="w-6 h-6" />
                                 </a>
                                 <a
                                     v-if="project.live_url"
@@ -105,7 +107,7 @@ function goToProject(slug) {
                                     class="p-3 bg-card border border-border rounded-lg text-muted-foreground hover:text-accent hover:border-accent transition-all duration-300 hover:scale-110"
                                     aria-label="View live project"
                                 >
-                                    <ExternalLink class="w-6 h-6" />
+                                    <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="w-6 h-6" />
                                 </a>
                             </div>
                         </div>
@@ -130,7 +132,7 @@ function goToProject(slug) {
                     >
                         <div class="flex items-center justify-between mb-4">
                             <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                                <Eye class="w-6 h-6 text-accent group-hover:scale-110 transition-transform" />
+                                <FontAwesomeIcon :icon="faEye" class="w-6 h-6 text-accent group-hover:scale-110 transition-transform" />
                             </div>
                             <div class="flex items-center space-x-3">
                                 <a
@@ -141,7 +143,7 @@ function goToProject(slug) {
                                     @click.stop
                                     class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
                                 >
-                                    <GithubIcon class="w-5 h-5" />
+                                    <FontAwesomeIcon :icon="faGithub" class="w-5 h-5" />
                                 </a>
                                 <a
                                     v-if="project.live_url"
@@ -151,7 +153,7 @@ function goToProject(slug) {
                                     @click.stop
                                     class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
                                 >
-                                    <ExternalLink class="w-5 h-5" />
+                                    <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="w-5 h-5" />
                                 </a>
                             </div>
                         </div>

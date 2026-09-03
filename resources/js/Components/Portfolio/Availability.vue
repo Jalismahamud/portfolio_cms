@@ -1,5 +1,6 @@
 <script setup>
-import { Sparkles, Mail, ArrowRight } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faWandMagicSparkles, faEnvelope, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps({
     email: { type: String, default: '' },
@@ -22,7 +23,7 @@ function scrollToContact() {
 
         <div class="max-w-4xl mx-auto text-center relative z-10">
             <div class="inline-flex items-center space-x-2 px-4 py-2 bg-accent/10 border border-accent/30 rounded-full mb-8" data-aos="fade-down">
-                <Sparkles class="w-4 h-4 text-accent animate-pulse" />
+                <FontAwesomeIcon :icon="faWandMagicSparkles" class="w-4 h-4 text-accent animate-pulse" />
                 <span class="text-sm font-medium text-accent">
                     {{ availabilityStatus ? 'Open for Opportunities' : 'Currently Unavailable' }}
                 </span>
@@ -42,9 +43,9 @@ function scrollToContact() {
                     @click="scrollToContact"
                     class="group inline-flex items-center space-x-2 px-8 py-4 bg-accent text-accent-foreground font-semibold rounded-lg hover:shadow-lg hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-1"
                 >
-                    <Mail class="w-5 h-5" />
+                    <FontAwesomeIcon :icon="faEnvelope" class="w-5 h-5" />
                     <span>Hire Me for Your Next Project</span>
-                    <ArrowRight class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <FontAwesomeIcon :icon="faArrowRight" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
 
                 <a

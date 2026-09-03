@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { FileDown, MessageCircle } from '@lucide/vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faFileArrowDown, faComment } from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps({
     name: { type: String, required: true },
@@ -145,7 +146,7 @@ function scrollToContact() {
                     @click="scrollToContact"
                     class="group inline-flex items-center space-x-2 px-6 sm:px-8 py-3 sm:py-4 bg-muted/50 border border-border rounded-lg text-foreground font-medium hover:text-accent hover:border-accent/50 hover:bg-accent/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                 >
-                    <MessageCircle class="w-5 h-5" />
+                    <FontAwesomeIcon :icon="faComment" class="w-5 h-5" />
                     <span>Get In Touch</span>
                 </button>
 
@@ -154,7 +155,7 @@ function scrollToContact() {
                     download="My-CV.pdf"
                     class="group inline-flex items-center space-x-2 px-6 sm:px-8 py-3 sm:py-4 bg-accent/10 border border-accent/50 rounded-lg text-accent font-medium hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-accent/20"
                 >
-                    <FileDown class="w-5 h-5" />
+                    <FontAwesomeIcon :icon="faFileArrowDown" class="w-5 h-5" />
                     <span>Download Resume</span>
                 </a>
             </div>

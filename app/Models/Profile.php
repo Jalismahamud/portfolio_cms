@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasStorageUrls;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class Profile extends Model
 {
-    use HasFactory;
+    use HasFactory, HasStorageUrls;
 
     /**
      * Get the attributes that should be cast.
@@ -37,5 +39,19 @@ class Profile extends Model
             'projects_delivered' => 'integer',
             'satisfaction_rate' => 'integer',
         ];
+    }
+
+    protected function profilePhoto(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value) => $this->resolveStorageUrl($value),
+        );
+    }
+
+    protected function resumeFile(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value) => $this->resolveStorageUrl($value),
+        );
     }
 }
