@@ -1,0 +1,112 @@
+# =========================================================
+# Jalis Mahamud Portfolio — Apache config (Hostinger shared hosting)
+# =========================================================
+
+# -------------------------
+# 0) Disable auto trailing-slash redirects
+# The prerenderer writes real directories with an index.html inside
+# (e.g. dist/project/cryptax/index.html) so crawlers get real static HTML
+# per route. Apache's default mod_dir behavior 301-redirects a
+# directory request without a trailing slash (/project/cryptax) to add
+# one (/project/cryptax/) before serving it — but every canonical URL,
+# <Link>, and sitemap entry in this app intentionally has NO trailing
+# slash. Left on, every single project/blog page would get an extra,
+# unwanted redirect whose destination doesn't match its own canonical tag.
+# -------------------------
+<IfModule mod_dir.c>
+  DirectorySlash Off
+</IfModule>
+
+# -------------------------
+# 1) Force HTTPS + canonical host (non-www)
+# -------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Force HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Force non-www (canonical host is https://jalisdev.com)
+  RewriteCond %{HTTP_HOST} ^www\.jalisdev\.com$ [NC]
+  RewriteRule ^ https://jalisdev.com%{REQUEST_URI} [L,R=301]
+
+  # -------------------------
+  # 2) Prerendered route directories (no trailing slash)
+  # The prerenderer writes e.g. dist/project/cryptax/index.html so
+  # crawlers get real static HTML per route. With DirectorySlash Off
+  # above, Apache won't auto-redirect /project/cryptax -> .../ on its
+  # own, so serve that directory's index.html directly via an internal
+  # rewrite (no redirect, URL bar / canonical stays exactly as-is).
+  # -------------------------
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.*[^/])$ $1/index.html [L]
+
+  # -------------------------
+  # 3) SPA fallback routing
+  # This is a client-side-routed React app (react-router-dom).
+  # Any request that isn't an existing file or directory must
+  # fall through to index.html so deep links and hard refreshes
+  # (e.g. for a route with no prerendered snapshot) don't 404.
+  # -------------------------
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# -------------------------
+# 4) Security headers
+# -------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+
+  # HSTS: only enabled for this host, no includeSubDomains/preload since
+  # other subdomains (e.g. fashion.jalisdev.com) may be hosted elsewhere
+  # and might not have HTTPS fully verified yet.
+  Header always set Strict-Transport-Security "max-age=31536000"
+
+  # Content-Security-Policy: allow-lists only the third parties this site
+  # actually calls (Google Fonts, gtag/GA, Ahrefs analytics, Unsplash blog
+  # images, jsDelivr tech icons). 'unsafe-inline' is required for the
+  # inline gtag bootstrap script and React's inline style attributes since
+  # this is static hosting with no server-side nonce support.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://analytics.ahrefs.com https://www.googletagmanager.com https://*.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://cdn.jsdelivr.net; connect-src 'self' https://analytics.ahrefs.com https://*.google-analytics.com https://*.analytics.google.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+</IfModule>
+
+# -------------------------
+# 5) Compression
+# -------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# -------------------------
+# 6) Caching
+# Static hashed assets (Vite output) can be cached for a year.
+# index.html must always revalidate so deploys go live immediately.
+# -------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  # Apache's current mime.types serves .js as text/javascript, not the
+  # older application/javascript — list both so this doesn't silently
+  # stop matching again on a future Apache/mime.types update.
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/font-woff2 "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>

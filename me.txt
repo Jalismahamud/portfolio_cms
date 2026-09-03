@@ -1,0 +1,119 @@
+composer require filament/filament -W
+php artisan filament:install --panels
+php artisan make:filament-user
+
+
+Filament ইন্সটল হয়ে গেছে। এখন প্রতিটা model এর জন্য Filament Resource বানাও
+(php artisan make:filament-resource ModelName --generate কমান্ড ব্যবহার করে, যেটা
+existing columns থেকে auto form/table বানিয়ে দিবে, তারপর প্রয়োজন অনুযায়ী customize করো)।
+
+নিচের গুলার জন্য Resource বানাও: Profile (single record, শুধু edit — SPA/singleton
+resource pattern ব্যবহার করো, list view লাগবে না), Skill, Technology, GalleryImage,
+Experience, Project (সাথে nested ProjectImages RelationManager), Education,
+Certification, SkillGroup (সাথে nested SkillGroupItems RelationManager), BlogPost
+(সাথে BlogTags multi-select), ContactInfo, SocialLink, ContactSubmission (read-only
+listing, reply/mark-as-read action সহ), SiteSetting।
+
+নিয়ম:
+- image upload field গুলোতে Filament এর FileUpload কম্পোনেন্ট ব্যবহার করো,
+  storage/app/public এ সেভ হবে এভাবে সেট করো
+- BlogPost এর content field এ RichEditor অথবা MarkdownEditor ব্যবহার করো (যেটা
+  markdown ভালোভাবে হ্যান্ডল করে সেটা বেছে নাও)
+- json array column গুলো (description bullets, features, challenges, highlights ইত্যাদি)
+  এর জন্য Repeater ফিল্ড ব্যবহার করো, drag-to-reorder enabled রাখো
+- sort_order কলাম আছে এমন সব resource এ table কে sort_order অনুযায়ী default sort করো,
+  এবং সম্ভব হলে reorderable() ব্যবহার করো drag-drop reordering এর জন্য
+- Technology এবং BelongsToMany relationship (Project/Experience) এ Select field
+  multiple() + searchable() + preload() সহ ব্যবহার করো
+- প্রতিটা resource এ Navigation group ঠিকভাবে সাজাও (যেমন: "Content", "Portfolio",
+  "Blog", "Settings" — লজিক্যালি গ্রুপ করো)
+- storage link লাগবে কিনা মনে করিয়ে দিও (php artisan storage:link)
+
+শেষ হলে জানাও কী কী resource বানানো হলো এবং কোনো manual step বাকি আছে কিনা
+(যেমন storage link, config পরিবর্তন)।
+
+
+
+
+step : 4
+
+এখন [SECTION NAME, যেমন: Hero] সেকশনটা Vue তে রিক্রিয়েট করো।
+
+React reference: `_react-reference/src/components/[ComponentName].tsx` (এবং যদি
+আলাদা data file থাকে সেটাও দেখো, যেমন `_react-reference/src/data/[file].ts`)
+
+কাজ:
+1. এই React component এর UI/layout/styling হুবহু same রেখে একটা Vue Single File
+   Component বানাও (resources/js/Pages অথবা resources/js/Components এ, যেটা
+   উপযুক্ত সেখানে রাখো)
+2. আগে যেসব ডেটা hardcoded ছিল, সেগুলো এখন Inertia props হিসেবে আসবে — props
+   টাইপ/structure টা [Step 2 তে বানানো] সংশ্লিষ্ট model এর সাথে ম্যাচ করিয়ে define করো
+3. Tailwind classes এবং animation/interaction logic (যদি থাকে, যেমন typing animation,
+   theme toggle, image slider) React থেকে Vue এর equivalent এ (যেমন framer-motion
+   এর বদলে Vue transition বা @vueuse/motion) কনভার্ট করো
+4. Image path গুলো এখন storage থেকে আসবে (Storage::url() দিয়ে backend থেকে full URL
+   পাঠানো হবে ধরে নাও), তাই hardcoded import path গুলো props-based বানাও
+5. Responsive behavior অক্ষত রাখো
+
+এই component টা এখন শুধু বানাও, controller wiring পরের ধাপে করব। শেষ হলে জানাও
+কোনো React dependency (যেমন framer-motion, react-icons) এর Vue equivalent না
+পেলে বা কনভার্ট করতে সমস্যা হলে।
+
+step 5 :
+
+এখন সব প্রয়োজনীয় Controller বানাও যেগুলো DB থেকে data নিয়ে Inertia::render() দিয়ে
+আগে বানানো Vue page/component গুলোতে props পাঠাবে।
+
+দরকার:
+- HomeController@index — homepage এর জন্য সব সেকশনের ডেটা (profile, skills,
+  techStack, galleryImages, experiences, featured+other projects, education,
+  certifications, skillGroups, latest 3 blog posts, contactInfo, socialLinks)
+  একসাথে fetch করে Home page এ পাঠাবে
+- ProjectController@index — সব প্রজেক্ট লিস্ট (সার্চ query param handle করবে)
+- ProjectController@show($slug) — একটা প্রজেক্টের ডিটেইল (images, technologies সহ eager load করবে)
+- BlogController@index — সব ব্লগ পোস্ট লিস্ট (সার্চ + category filter query param handle করবে),
+  শুধু is_published=true গুলো দেখাবে
+- BlogController@show($slug) — একটা ব্লগ পোস্টের ফুল ডিটেইল (tags সহ eager load করবে)
+
+নিয়ম:
+- N+1 query এড়াতে সব জায়গায় eager loading (with()) ব্যবহার করো
+- routes/web.php এ সব route যুক্ত করো, React Router এর route pattern গুলোর সাথে মিলিয়ে
+  (/ , /projects, /project/{slug}, /blog, /blog/{slug})
+- 404 handling — না পাওয়া গেলে Laravel এর abort(404) ব্যবহার করো, যেটা Inertia এর
+  Error page এ যাবে
+
+শেষে সব route এর একটা লিস্ট দাও।
+
+step : 6
+
+Contact ফর্ম functional বানাও।
+
+কাজ:
+1. ContactController@store বানাও — validation (name, email required+valid email,
+   subject, message required) সহ, ContactSubmission মডেলে সেভ করবে
+2. একটা Mailable ক্লাস বানাও (ContactFormSubmitted) যেটা আমার profile email এ
+   notification পাঠাবে যখন নতুন submission আসে (queue করে পাঠাও যাতে UI block না হয়)
+3. Vue এর Contact component এ form submission এ Inertia এর useForm() ব্যবহার করো
+   (আগে যেটা fake toast দেখাত), সফল হলে success toast/message দেখাবে, error হলে
+   validation error গুলো field এর নিচে দেখাবে
+4. routes/web.php এ POST /contact route যোগ করো
+
+.env এ mail config placeholder যোগ করার দরকার হলে জানিও (MAIL_MAILER, MAIL_FROM_ADDRESS ইত্যাদি)।
+
+
+step : 7
+
+পুরো প্রজেক্ট রিভিউ করে নিচের কাজগুলো করো:
+
+1. SEO — প্রতিটা page এ Inertia Head কম্পোনেন্ট দিয়ে dynamic title/meta description
+   বসাও (blog post/project detail পেইজে প্রতিটার নিজস্ব title/description থাকবে)
+2. Loading states — যেসব জায়গায় দরকার (image loading, form submit) সেখানে proper
+   loading indicator আছে কিনা চেক করো
+3. Theme toggle (dark/light) ঠিকমতো কাজ করছে কিনা, এবং localStorage এর বদলে
+   এখন কীভাবে persist হবে সেটা রিভিউ করো
+4. সব static asset path (public/*.webp ইত্যাদি) ঠিকমতো storage এর সাথে ম্যাপ হয়েছে কিনা যাচাই করো
+5. .env.example আপডেট করো যা যা নতুন config লাগবে সেগুলো দিয়ে
+6. প্রজেক্টের একটা README বানাও — setup instructions (composer install, npm install,
+   migrate, storage:link, filament user তৈরি) সহ
+
+কোনো জায়গায় React এর কোনো ফিচার মিস হয়ে গেছে মনে হলে আমাকে জানাও।

@@ -1,0 +1,347 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Modern Developer Portfolio Design System
+Dark navy theme with cyan accents - All colors MUST be HSL.
+*/
+
+@layer base {
+    :root {
+        /* Dark Navy Background Palette */
+        --background: 234 32% 18%; /* #1a1a2e - Dark navy blue */
+        --foreground: 0 0% 100%; /* #ffffff - Pure white text */
+
+        --card: 237 24% 26%; /* #2d2d44 - Deep charcoal cards */
+        --card-foreground: 0 0% 100%;
+
+        --popover: 237 24% 26%;
+        --popover-foreground: 0 0% 100%;
+
+        /* Cyan Accent System */
+        --primary: 192 100% 50%; /* #00d4ff - Bright cyan */
+        --primary-foreground: 234 32% 18%; /* Dark navy on cyan */
+
+        --secondary: 237 24% 26%; /* Deep charcoal */
+        --secondary-foreground: 0 0% 100%;
+
+        --muted: 237 24% 22%; /* Darker charcoal */
+        --muted-foreground: 0 0% 70%; /* Light gray text */
+
+        /* Accent & Highlight Colors */
+        --accent: 192 100% 50%; /* Cyan accent */
+        --accent-foreground: 234 32% 18%;
+
+        --highlight: 356 75% 70%; /* #ff6b6b - Pink/red highlights */
+
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 100%;
+
+        /* Border & Input Styling */
+        --border: 237 24% 30%; /* Subtle borders */
+        --input: 237 24% 22%; /* Input backgrounds */
+        --ring: 192 100% 50%; /* Cyan focus rings */
+
+        /* Design System Extensions */
+        --radius: 0.75rem;
+
+        /* Gradients */
+        --gradient-primary: linear-gradient(135deg, hsl(192 100% 50%), hsl(192 100% 40%));
+        --gradient-hero: linear-gradient(135deg, hsl(234 32% 18%), hsl(237 24% 26%));
+        --gradient-accent: linear-gradient(90deg, hsl(192 100% 50%), hsl(356 75% 70%));
+
+        /* Shadows & Glows */
+        --glow-cyan: 0 0 30px hsl(192 100% 50% / 0.3);
+        --shadow-elegant: 0 20px 40px hsl(0 0% 0% / 0.4);
+        --shadow-card: 0 10px 30px hsl(0 0% 0% / 0.3);
+
+        /* Animations */
+        --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-glow: box-shadow 0.3s ease;
+    }
+
+    /* Light theme colors */
+    .light {
+        --background: 0 0% 98%; /* Light gray background */
+        --foreground: 234 32% 18%; /* Dark navy text */
+
+        --card: 0 0% 100%; /* White cards */
+        --card-foreground: 234 32% 18%;
+
+        --popover: 0 0% 100%;
+        --popover-foreground: 234 32% 18%;
+
+        --primary: 192 100% 45%; /* Slightly darker cyan for light mode */
+        --primary-foreground: 0 0% 100%;
+
+        --secondary: 220 13% 91%; /* Light gray */
+        --secondary-foreground: 234 32% 18%;
+
+        --muted: 220 13% 91%; /* Light gray muted */
+        --muted-foreground: 215 16% 47%; /* Medium gray text */
+
+        --accent: 192 100% 45%; /* Cyan accent */
+        --accent-foreground: 0 0% 100%;
+
+        --highlight: 356 75% 60%; /* Slightly darker pink for light mode */
+
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 100%;
+
+        --border: 220 13% 86%; /* Light borders */
+        --input: 220 13% 91%; /* Light input backgrounds */
+        --ring: 192 100% 45%; /* Cyan focus rings */
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    /* Hide scrollbar but keep functionality */
+    html {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+    }
+
+    html::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        html {
+            scroll-behavior: smooth;
+        }
+    }
+
+    body {
+        @apply bg-background text-foreground font-sans antialiased;
+        overflow-x: hidden;
+    }
+}
+
+@layer components {
+    /* Glow effects */
+    .glow-cyan {
+        box-shadow: var(--glow-cyan);
+    }
+
+    .shadow-elegant {
+        box-shadow: var(--shadow-elegant);
+    }
+
+    .shadow-card {
+        box-shadow: var(--shadow-card);
+    }
+
+    /* Smooth transitions */
+    .transition-smooth {
+        transition: var(--transition-smooth);
+    }
+
+    .transition-glow {
+        transition: var(--transition-glow);
+    }
+
+    /* Gradient backgrounds */
+    .bg-gradient-primary {
+        background: var(--gradient-primary);
+    }
+
+    .bg-gradient-hero {
+        background: var(--gradient-hero);
+    }
+
+    .bg-gradient-accent {
+        background: var(--gradient-accent);
+    }
+
+    /* Section spacing. scroll-margin-top keeps section headings from landing
+       under the fixed h-20 navbar when jumped to via scrollIntoView or a hash. */
+    .section-padding {
+        @apply py-16 px-4 sm:py-20 sm:px-6 lg:px-8;
+        scroll-margin-top: 5.5rem;
+    }
+
+    /* Hide scrollbar but keep functionality (e.g. thumbnail strips) */
+    .scrollbar-hide {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Glowing text effect */
+    .text-glow {
+        text-shadow: 0 0 20px hsl(var(--accent) / 0.5);
+    }
+
+    /* Section headers */
+    .section-header {
+        @apply text-2xl sm:text-3xl lg:text-4xl font-bold mb-8;
+    }
+
+    .section-number {
+        @apply text-accent font-mono text-lg;
+    }
+
+    /* Button styles */
+    .btn-outline-cyan {
+        @apply border-2 border-accent text-accent px-6 py-3 rounded-lg
+               hover:bg-accent hover:text-background transition-smooth
+               hover:glow-cyan;
+    }
+
+    .btn-outline {
+        @apply border-2 border-border text-foreground px-6 py-3 rounded-lg
+               hover:border-accent hover:text-accent transition-smooth;
+    }
+
+    /* Card effects */
+    .card-hover {
+        @apply transition-smooth hover:shadow-elegant hover:-translate-y-2;
+    }
+
+    /* Tech stack grid */
+    .tech-grid {
+        @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4;
+    }
+
+    /* Navigation styles */
+    .nav-link {
+        @apply text-muted-foreground hover:text-accent transition-smooth
+               relative after:content-[''] after:absolute after:bottom-0
+               after:left-0 after:w-0 after:h-0.5 after:bg-accent
+               after:transition-all after:duration-300 hover:after:w-full;
+    }
+
+    .nav-link.active {
+        @apply text-accent after:w-full;
+    }
+
+    /* Logo orbit animation */
+    .animate-logo-orbit {
+        position: relative;
+        animation: logoOrbit 3s ease-in-out infinite;
+    }
+
+    .animate-logo-orbit::before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+        border: 2px solid hsl(var(--accent));
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: orbitRotate 3s linear infinite;
+    }
+
+    @keyframes logoOrbit {
+        0%,
+        100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    @keyframes orbitRotate {
+        0% {
+            transform: rotate(0deg);
+            opacity: 0.3;
+        }
+        50% {
+            opacity: 0.6;
+        }
+        100% {
+            transform: rotate(360deg);
+            opacity: 0.3;
+        }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.8s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    section {
+        transition:
+            opacity 0.3s ease-out,
+            transform 0.3s ease-out;
+    }
+
+    /* Floating animation */
+    .animate-float {
+        animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-15px);
+        }
+    }
+
+    /* Star/Particle animation - slower and smoother */
+    .animate-star-slow {
+        animation: starFloatSlow 12s ease-in-out infinite;
+    }
+
+    @keyframes starFloatSlow {
+        0%,
+        100% {
+            opacity: 0.2;
+            transform: translate(0, 0) scale(1);
+        }
+        20% {
+            opacity: 0.6;
+            transform: translate(8px, -15px) scale(1.1);
+        }
+        40% {
+            opacity: 0.8;
+            transform: translate(-3px, -30px) scale(0.9);
+        }
+        60% {
+            opacity: 0.5;
+            transform: translate(12px, -20px) scale(1.15);
+        }
+        80% {
+            opacity: 0.7;
+            transform: translate(-5px, -10px) scale(1.05);
+        }
+    }
+}
