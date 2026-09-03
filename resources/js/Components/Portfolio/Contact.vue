@@ -47,7 +47,7 @@ function handleSubmit() {
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="mb-16 sm:mb-20 text-center" data-aos="fade-down">
                 <h2 class="section-header">
-                    <span class="section-number">06.</span> Get In Touch
+                    <span class="section-number">07.</span> Get In Touch
                 </h2>
                 <p class="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
                     I'm always interested in new opportunities and interesting projects. Whether you have a question or just want to say hello, feel free to reach out!

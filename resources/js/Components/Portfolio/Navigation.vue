@@ -16,7 +16,8 @@ const navItems = [
     { id: 'projects', label: '03. Projects', href: '#projects' },
     { id: 'education', label: '04. Education', href: '#education' },
     { id: 'blog', label: '05. Blog', href: '#blog' },
-    { id: 'contact', label: '06. Contact', href: '#contact' },
+    { id: 'ai', label: '06. AI', href: '#ai' },
+    { id: 'contact', label: '07. Contact', href: '#contact' },
 ];
 
 const { theme, toggleTheme } = useTheme();
@@ -25,6 +26,7 @@ const isMobileMenuOpen = ref(false);
 const page = usePage();
 
 const isHome = computed(() => page.url === '/' || page.url.startsWith('/#'));
+const resolvedLogoUrl = computed(() => page.props.siteSettings?.logo_url || props.logoUrl);
 
 function splitLabel(label) {
     const [num, ...rest] = label.split('. ');
@@ -118,8 +120,8 @@ function scrollToTop() {
                 <div class="flex items-center">
                     <Link href="/" @click.prevent="scrollToTop" aria-label="Home" class="relative cursor-pointer inline-block">
                         <img
-                            v-if="logoUrl"
-                            :src="logoUrl"
+                            v-if="resolvedLogoUrl"
+                            :src="resolvedLogoUrl"
                             alt="Logo"
                             @error="(event) => { event.target.src = '/logo.webp'; }"
                             width="96"

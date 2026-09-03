@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -38,6 +39,11 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
             ],
             'siteUrl' => config('seo.site_url'),
+            'siteSettings' => fn () => tap(SiteSetting::current(), function (?SiteSetting $settings): void {
+                if ($settings) {
+                    $settings->setAttribute('logo_url', $settings->assetUrl($settings->logo, '/logo.webp'));
+                }
+            }),
         ];
     }
 }

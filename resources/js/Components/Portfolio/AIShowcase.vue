@@ -79,6 +79,7 @@ const aiServices = [
                     <span class="text-accent font-medium">AI Integration</span>
                 </div>
                 <h2 class="section-header">
+                    <span class="section-number">06.</span>
                     <span class="bg-gradient-to-r from-accent via-foreground to-accent bg-clip-text text-transparent">Artificial Intelligence</span>
                 </h2>
                 <p class="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">

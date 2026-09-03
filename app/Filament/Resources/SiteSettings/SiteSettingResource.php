@@ -22,6 +22,13 @@ class SiteSettingResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Settings';
 
+    protected static ?string $navigationLabel = 'Site Branding';
+
+    public static function canCreate(): bool
+    {
+        return ! static::getModel()::query()->exists();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return SiteSettingForm::configure($schema);

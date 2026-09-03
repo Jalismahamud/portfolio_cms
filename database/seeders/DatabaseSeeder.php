@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\SiteSetting;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -19,7 +20,14 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'admin@gmail.com',
+        ]);
+
+        SiteSetting::firstOrCreate([], [
+            'key' => 'branding',
+            'site_name' => 'Jalis Mahamud',
+            'login_heading' => 'Welcome back',
+            'login_description' => 'Sign in to manage your portfolio.',
         ]);
 
         $this->call(PortfolioSeeder::class);

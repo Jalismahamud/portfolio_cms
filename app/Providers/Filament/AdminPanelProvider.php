@@ -9,9 +9,11 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Enums\ThemeMode;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
+use App\Filament\Widgets\PortfolioStatsOverview;
+use App\Models\SiteSetting;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -27,7 +29,13 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(\App\Filament\Pages\Auth\Login::class)
+            ->defaultThemeMode(ThemeMode::Dark)
+            ->globalSearch()
+            ->brandName(fn () => SiteSetting::current()?->site_name ?: config('app.name', 'Portfolio CMS'))
+            ->brandLogo(fn () => SiteSetting::current()?->assetUrl(SiteSetting::current()?->login_logo ?: SiteSetting::current()?->logo, '/logo.webp'))
+            ->darkModeBrandLogo(fn () => SiteSetting::current()?->assetUrl(SiteSetting::current()?->login_logo ?: SiteSetting::current()?->logo, '/logo.webp'))
+            ->favicon(fn () => SiteSetting::current()?->assetUrl(SiteSetting::current()?->favicon, '/favicon.webp'))
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -38,8 +46,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
+                PortfolioStatsOverview::class,
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

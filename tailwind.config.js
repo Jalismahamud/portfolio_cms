@@ -58,9 +58,9 @@ export default {
                 highlight: 'hsl(var(--highlight))',
             },
             fontFamily: {
-                sans: ['Inter', 'system-ui', 'sans-serif'],
+                sans: ['Manrope', 'system-ui', 'sans-serif'],
                 mono: ['JetBrains Mono', 'Monaco', 'monospace'],
-                serif: ['DM Serif Text', 'serif'],
+                serif: ['DM Serif Display', 'serif'],
             },
             borderRadius: {
                 lg: 'var(--radius)',

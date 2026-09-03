@@ -15,11 +15,18 @@ class SiteSettingsTable
         return $table
             ->defaultSort('key')
             ->columns([
-                TextColumn::make('key')
-                    ->searchable(),
-                TextColumn::make('value')
-                    ->limit(60)
-                    ->searchable(),
+                TextColumn::make('site_name')
+                    ->label('Site name')
+                    ->placeholder('Not configured'),
+                TextColumn::make('logo')
+                    ->label('Logo')
+                    ->formatStateUsing(fn (?string $state) => filled($state) ? 'Configured' : 'Default'),
+                TextColumn::make('favicon')
+                    ->label('Favicon')
+                    ->formatStateUsing(fn (?string $state) => filled($state) ? 'Configured' : 'Default'),
+                TextColumn::make('login_heading')
+                    ->label('Login heading')
+                    ->placeholder('Default'),
             ])
             ->filters([
                 //

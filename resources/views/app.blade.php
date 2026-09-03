@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    @php($siteSettings = \App\Models\SiteSetting::current())
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +11,7 @@
         @endif
 
         <!-- Favicon & App Icons -->
-        <link rel="icon" type="image/webp" href="/favicon.webp">
+        <link rel="icon" type="image/webp" href="{{ $siteSettings?->assetUrl($siteSettings->favicon, '/favicon.webp') }}">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <link rel="manifest" href="/manifest.json">
 
@@ -22,12 +23,12 @@
             })();
         </script>
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ $siteSettings?->site_name ?: config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=DM+Serif+Text:wght@400&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
         <!-- Third-party analytics DNS warm-up -->
         <link rel="dns-prefetch" href="https://analytics.ahrefs.com">
