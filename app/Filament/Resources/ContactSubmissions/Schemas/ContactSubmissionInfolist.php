@@ -15,6 +15,11 @@ class ContactSubmissionInfolist
                 TextEntry::make('email')
                     ->label('Email address')
                     ->copyable(),
+                TextEntry::make('company'),
+                TextEntry::make('inquiry_type')
+                    ->label('Project type'),
+                TextEntry::make('budget_range')
+                    ->label('Budget'),
                 TextEntry::make('subject'),
                 TextEntry::make('message')
                     ->columnSpanFull(),

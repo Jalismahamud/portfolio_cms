@@ -5,6 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#1a1a2e">
+        <meta name="description" content="{{ $siteSettings?->site_description ?: 'Professional portfolio website' }}">
 
         @if (config('seo.google_site_verification'))
             <meta name="google-site-verification" content="{{ config('seo.google_site_verification') }}">

@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import Seo from '@/Components/Portfolio/Seo.vue';
 import Navigation from '@/Components/Portfolio/Navigation.vue';
 import Hero from '@/Components/Portfolio/Hero.vue';
@@ -29,10 +30,12 @@ const props = defineProps({
     socialLinks: { type: Array, default: () => [] },
 });
 
+const page = usePage();
+const siteSettings = computed(() => page.props.siteSettings || {});
 const seoTitle = computed(() =>
-    props.profile?.name ? `${props.profile.name} | Laravel & Vue.js Full Stack Developer` : 'Portfolio',
+    siteSettings.value.site_name || (props.profile?.name ? `${props.profile.name} | Portfolio` : 'Portfolio'),
 );
-const seoDescription = computed(() => props.profile?.tagline || props.profile?.bio?.slice(0, 155) || '');
+const seoDescription = computed(() => siteSettings.value.site_description || props.profile?.tagline || props.profile?.bio?.slice(0, 155) || '');
 </script>
 
 <template>
