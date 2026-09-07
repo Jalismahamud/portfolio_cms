@@ -74,7 +74,10 @@ onUnmounted(() => {
                         :src="images[currentIndex].src"
                         :alt="images[currentIndex].alt"
                         @error="useFallbackImage"
+                        loading="lazy"
                         decoding="async"
+                        width="600"
+                        height="450"
                         class="h-full w-full object-cover"
                     />
                     <div class="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />

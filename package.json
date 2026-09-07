@@ -30,7 +30,6 @@
         "@fortawesome/free-solid-svg-icons": "^7.3.1",
         "@fortawesome/vue-fontawesome": "^3.3.3",
         "aos": "^2.3.4",
-        "axios": "^1.20.0",
         "dompurify": "^3.4.15",
         "leaflet": "^1.9.4",
         "marked": "^18.0.11"

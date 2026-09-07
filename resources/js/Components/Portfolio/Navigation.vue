@@ -33,7 +33,7 @@ function splitLabel(label) {
     return { num: `${num}.`, text: rest.join('. ') };
 }
 
-let handleScroll = null;
+let sectionObserver = null;
 
 onMounted(() => {
     if (page.url.startsWith('/blog')) {
@@ -46,35 +46,20 @@ onMounted(() => {
     }
     if (!isHome.value) return;
 
-    handleScroll = () => {
-        const scrollPosition = window.scrollY + window.innerHeight / 3;
-        let current = 'about';
+    sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) activeSection.value = entry.target.id;
+        });
+    }, { rootMargin: '-20% 0px -50% 0px', threshold: 0 });
 
-        for (const item of navItems) {
-            const el = document.getElementById(item.id);
-            if (el) {
-                const rect = el.getBoundingClientRect();
-                const top = window.scrollY + rect.top;
-                const bottom = top + rect.height;
-
-                if (scrollPosition >= top && scrollPosition < bottom) {
-                    current = item.id;
-                    break;
-                }
-            }
-        }
-
-        if (activeSection.value !== current) {
-            activeSection.value = current;
-        }
-    };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll);
+    navItems.forEach((item) => {
+        const section = document.getElementById(item.id);
+        if (section) sectionObserver.observe(section);
+    });
 });
 
 onUnmounted(() => {
-    if (handleScroll) window.removeEventListener('scroll', handleScroll);
+    sectionObserver?.disconnect();
 });
 
 function scrollToSection(href) {

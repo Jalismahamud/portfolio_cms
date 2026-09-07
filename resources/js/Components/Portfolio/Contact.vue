@@ -28,7 +28,9 @@ const form = useForm({
 const toast = ref({ show: false, title: '', description: '' });
 const clientErrors = ref({});
 const mapElement = ref(null);
+const mapReady = ref(false);
 let map;
+let mapObserver;
 
 const inquiryTypes = [
     'Laravel Development',
@@ -118,8 +120,9 @@ function handleSubmit() {
     });
 }
 
-onMounted(async () => {
+async function initializeMap() {
     const { default: L } = await import('leaflet');
+    await import('leaflet/dist/leaflet.css');
     if (!mapElement.value) return;
 
     map = L.map(mapElement.value, { scrollWheelZoom: false }).setView([23.7914513, 90.430083], 16);
@@ -132,9 +135,24 @@ onMounted(async () => {
         .addTo(map)
         .bindPopup('<strong>Khilbarirtek Boroitola Bazar</strong><br>Rohim Road, Vatara, Dhaka')
         .openPopup();
+    mapReady.value = true;
+}
+
+onMounted(() => {
+    mapObserver = new IntersectionObserver((entries) => {
+        if (entries[0]?.isIntersecting) {
+            mapObserver.disconnect();
+            initializeMap();
+        }
+    }, { rootMargin: '300px' });
+
+    if (mapElement.value) mapObserver.observe(mapElement.value);
 });
 
-onBeforeUnmount(() => map?.remove());
+onBeforeUnmount(() => {
+    mapObserver?.disconnect();
+    map?.remove();
+});
 </script>
 
 <template>
@@ -335,7 +353,9 @@ onBeforeUnmount(() => map?.remove());
                         <FontAwesomeIcon :icon="faLocationDot" class="text-accent" />
                         <h3 class="text-xl font-bold text-foreground">Find Me Here</h3>
                     </div>
-                    <div ref="mapElement" class="h-72 sm:h-80 w-full rounded-lg border border-border overflow-hidden shadow-card" aria-label="Map showing Khilbarirtek Boroitola Bazar"></div>
+                    <div ref="mapElement" class="relative h-72 sm:h-80 w-full rounded-lg border border-border overflow-hidden shadow-card" aria-label="Map showing Khilbarirtek Boroitola Bazar">
+                        <div v-if="!mapReady" class="absolute inset-0 flex items-center justify-center bg-card text-sm text-muted-foreground">Loading map...</div>
+                    </div>
                 </div>
                 <a href="https://www.google.com/maps/dir/?api=1&destination=23.7914513,90.430083" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 btn-outline-cyan whitespace-nowrap">
                     <span>Get Directions</span>

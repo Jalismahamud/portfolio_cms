@@ -1,5 +1,4 @@
 import '../css/app.css';
-import './bootstrap';
 
 import { createInertiaApp, router } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
@@ -7,7 +6,6 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import 'leaflet/dist/leaflet.css';
 
 // Inertia doesn't reset scroll position between visits on its own. Without
 // this, navigating to a new page (e.g. a project card click) while scrolled

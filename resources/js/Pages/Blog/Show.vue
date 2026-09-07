@@ -86,7 +86,7 @@ function formatDate(date) {
                 </div>
 
                 <div v-if="post.image" class="mb-10 rounded-lg overflow-hidden border border-border">
-                    <img :src="post.image" :alt="post.title" class="w-full h-auto object-cover" />
+                    <img :src="post.image" :alt="post.title" loading="eager" fetchpriority="high" decoding="async" width="1200" height="600" class="w-full h-auto object-cover" />
                 </div>
 
                 <article

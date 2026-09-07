@@ -1264,7 +1264,7 @@ var _sfc_main$33 = {
 				text: rest.join(". ")
 			};
 		}
-		let handleScroll = null;
+		let sectionObserver = null;
 		onMounted(() => {
 			if (page.url.startsWith("/blog")) {
 				activeSection.value = "blog";
@@ -1275,28 +1275,21 @@ var _sfc_main$33 = {
 				return;
 			}
 			if (!isHome.value) return;
-			handleScroll = () => {
-				const scrollPosition = window.scrollY + window.innerHeight / 3;
-				let current = "about";
-				for (const item of navItems) {
-					const el = document.getElementById(item.id);
-					if (el) {
-						const rect = el.getBoundingClientRect();
-						const top = window.scrollY + rect.top;
-						const bottom = top + rect.height;
-						if (scrollPosition >= top && scrollPosition < bottom) {
-							current = item.id;
-							break;
-						}
-					}
-				}
-				if (activeSection.value !== current) activeSection.value = current;
-			};
-			handleScroll();
-			window.addEventListener("scroll", handleScroll);
+			sectionObserver = new IntersectionObserver((entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) activeSection.value = entry.target.id;
+				});
+			}, {
+				rootMargin: "-20% 0px -50% 0px",
+				threshold: 0
+			});
+			navItems.forEach((item) => {
+				const section = document.getElementById(item.id);
+				if (section) sectionObserver.observe(section);
+			});
 		});
 		onUnmounted(() => {
-			if (handleScroll) window.removeEventListener("scroll", handleScroll);
+			sectionObserver?.disconnect();
 		});
 		function scrollToTop() {
 			isMobileMenuOpen.value = false;
@@ -1740,7 +1733,7 @@ var _sfc_main$31 = {
 				_push(` ${ssrInterpolate(__props.post.read_time)} min read </span>`);
 			} else _push(`<!---->`);
 			_push(`</div></div>`);
-			if (__props.post.image) _push(`<div class="mb-10 rounded-lg overflow-hidden border border-border"><img${ssrRenderAttr("src", __props.post.image)}${ssrRenderAttr("alt", __props.post.title)} class="w-full h-auto object-cover"></div>`);
+			if (__props.post.image) _push(`<div class="mb-10 rounded-lg overflow-hidden border border-border"><img${ssrRenderAttr("src", __props.post.image)}${ssrRenderAttr("alt", __props.post.title)} loading="eager" fetchpriority="high" decoding="async" width="1200" height="600" class="w-full h-auto object-cover"></div>`);
 			else _push(`<!---->`);
 			_push(`<article class="prose prose-invert max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-accent prose-strong:text-foreground prose-code:text-accent prose-pre:bg-card prose-pre:border prose-pre:border-border prose-blockquote:border-accent prose-blockquote:text-muted-foreground">${renderedContent.value ?? ""}</article>`);
 			if (__props.post.tags?.length) {
@@ -2434,9 +2427,9 @@ var _sfc_main$21 = {
 			stopAutoPlay();
 		});
 		return (_ctx, _push, _parent, _attrs) => {
-			_push(`<div${ssrRenderAttrs(mergeProps({ class: "group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-accent/5 to-primary/5 p-1" }, _attrs))} data-v-3b5aa330><div class="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-card" data-v-3b5aa330><div class="absolute inset-0" data-v-3b5aa330><img${ssrRenderAttr("src", __props.images[currentIndex.value].src)}${ssrRenderAttr("alt", __props.images[currentIndex.value].alt)} decoding="async" class="h-full w-full object-cover" data-v-3b5aa330><div class="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" data-v-3b5aa330></div></div>`);
+			_push(`<div${ssrRenderAttrs(mergeProps({ class: "group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-accent/5 to-primary/5 p-1" }, _attrs))} data-v-be3e4497><div class="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-card" data-v-be3e4497><div class="absolute inset-0" data-v-be3e4497><img${ssrRenderAttr("src", __props.images[currentIndex.value].src)}${ssrRenderAttr("alt", __props.images[currentIndex.value].alt)} loading="lazy" decoding="async" width="600" height="450" class="h-full w-full object-cover" data-v-be3e4497><div class="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" data-v-be3e4497></div></div>`);
 			if (__props.images.length > 1) {
-				_push(`<button class="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-accent/20 hover:border-accent transition-all duration-300 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 z-10" aria-label="Previous image" data-v-3b5aa330>`);
+				_push(`<button class="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-accent/20 hover:border-accent transition-all duration-300 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 z-10" aria-label="Previous image" data-v-be3e4497>`);
 				_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 					icon: unref(faChevronLeft),
 					class: "w-5 h-5 text-foreground"
@@ -2444,21 +2437,21 @@ var _sfc_main$21 = {
 				_push(`</button>`);
 			} else _push(`<!---->`);
 			if (__props.images.length > 1) {
-				_push(`<button class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-accent/20 hover:border-accent transition-all duration-300 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 z-10" aria-label="Next image" data-v-3b5aa330>`);
+				_push(`<button class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-accent/20 hover:border-accent transition-all duration-300 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 z-10" aria-label="Next image" data-v-be3e4497>`);
 				_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 					icon: unref(faChevronRight),
 					class: "w-5 h-5 text-foreground"
 				}, null, _parent));
 				_push(`</button>`);
 			} else _push(`<!---->`);
-			_push(`<div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm border border-border text-xs text-foreground font-medium" data-v-3b5aa330>${ssrInterpolate(currentIndex.value + 1)} / ${ssrInterpolate(__props.images.length)}</div></div><div class="flex justify-center gap-2 mt-4 pb-2" data-v-3b5aa330><!--[-->`);
+			_push(`<div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm border border-border text-xs text-foreground font-medium" data-v-be3e4497>${ssrInterpolate(currentIndex.value + 1)} / ${ssrInterpolate(__props.images.length)}</div></div><div class="flex justify-center gap-2 mt-4 pb-2" data-v-be3e4497><!--[-->`);
 			ssrRenderList(__props.images, (_, index) => {
-				_push(`<button class="${ssrRenderClass([index === currentIndex.value ? "w-6 h-2 bg-accent" : "w-2 h-2 bg-muted-foreground/40 hover:bg-muted-foreground/60", "transition-all duration-300 rounded-full"])}"${ssrRenderAttr("aria-label", `Go to slide ${index + 1}`)} data-v-3b5aa330></button>`);
+				_push(`<button class="${ssrRenderClass([index === currentIndex.value ? "w-6 h-2 bg-accent" : "w-2 h-2 bg-muted-foreground/40 hover:bg-muted-foreground/60", "transition-all duration-300 rounded-full"])}"${ssrRenderAttr("aria-label", `Go to slide ${index + 1}`)} data-v-be3e4497></button>`);
 			});
-			_push(`<!--]--></div><div class="flex gap-2 mt-2 overflow-x-auto pb-2 px-1 scrollbar-hide" data-v-3b5aa330><!--[-->`);
+			_push(`<!--]--></div><div class="flex gap-2 mt-2 overflow-x-auto pb-2 px-1 scrollbar-hide" data-v-be3e4497><!--[-->`);
 			ssrRenderList(__props.images, (image, index) => {
-				_push(`<button class="${ssrRenderClass([index === currentIndex.value ? "border-accent ring-2 ring-accent/30" : "border-transparent hover:border-accent/50", "relative flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all duration-300 hover:scale-105"])}" data-v-3b5aa330><img${ssrRenderAttr("src", image.src)}${ssrRenderAttr("alt", image.alt)} loading="lazy" decoding="async" width="64" height="48" class="w-full h-full object-cover" data-v-3b5aa330>`);
-				if (index === currentIndex.value) _push(`<div class="absolute inset-0 bg-accent/20" data-v-3b5aa330></div>`);
+				_push(`<button class="${ssrRenderClass([index === currentIndex.value ? "border-accent ring-2 ring-accent/30" : "border-transparent hover:border-accent/50", "relative flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all duration-300 hover:scale-105"])}" data-v-be3e4497><img${ssrRenderAttr("src", image.src)}${ssrRenderAttr("alt", image.alt)} loading="lazy" decoding="async" width="64" height="48" class="w-full h-full object-cover" data-v-be3e4497>`);
+				if (index === currentIndex.value) _push(`<div class="absolute inset-0 bg-accent/20" data-v-be3e4497></div>`);
 				else _push(`<!---->`);
 				_push(`</button>`);
 			});
@@ -2472,7 +2465,7 @@ _sfc_main$21.setup = (props, ctx) => {
 	(ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("resources/js/Components/Portfolio/ImageGallerySlider.vue");
 	return _sfc_setup$21 ? _sfc_setup$21(props, ctx) : void 0;
 };
-var ImageGallerySlider_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main$21, [["__scopeId", "data-v-3b5aa330"]]);
+var ImageGallerySlider_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main$21, [["__scopeId", "data-v-be3e4497"]]);
 //#endregion
 //#region resources/js/Components/Portfolio/About.vue
 var _sfc_main$20 = {
@@ -3466,7 +3459,9 @@ var _sfc_main$12 = {
 		});
 		const clientErrors = ref({});
 		const mapElement = ref(null);
+		const mapReady = ref(false);
 		let map;
+		let mapObserver;
 		const inquiryTypes = [
 			"Laravel Development",
 			"Full Stack Development",
@@ -3518,8 +3513,9 @@ var _sfc_main$12 = {
 		function fieldError(field) {
 			return clientErrors.value[field] || form.errors[field];
 		}
-		onMounted(async () => {
+		async function initializeMap() {
 			const { default: L } = await import("leaflet");
+			await Promise.resolve({                   });
 			if (!mapElement.value) return;
 			map = L.map(mapElement.value, { scrollWheelZoom: false }).setView([23.7914513, 90.430083], 16);
 			L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -3527,8 +3523,21 @@ var _sfc_main$12 = {
 				maxZoom: 19
 			}).addTo(map);
 			L.marker([23.7914513, 90.430083]).addTo(map).bindPopup("<strong>Khilbarirtek Boroitola Bazar</strong><br>Rohim Road, Vatara, Dhaka").openPopup();
+			mapReady.value = true;
+		}
+		onMounted(() => {
+			mapObserver = new IntersectionObserver((entries) => {
+				if (entries[0]?.isIntersecting) {
+					mapObserver.disconnect();
+					initializeMap();
+				}
+			}, { rootMargin: "300px" });
+			if (mapElement.value) mapObserver.observe(mapElement.value);
 		});
-		onBeforeUnmount(() => map?.remove());
+		onBeforeUnmount(() => {
+			mapObserver?.disconnect();
+			map?.remove();
+		});
 		return (_ctx, _push, _parent, _attrs) => {
 			_push(`<section${ssrRenderAttrs(mergeProps({
 				id: "contact",
@@ -3613,7 +3622,10 @@ var _sfc_main$12 = {
 				icon: unref(faLocationDot),
 				class: "text-accent"
 			}, null, _parent));
-			_push(`<h3 class="text-xl font-bold text-foreground">Find Me Here</h3></div><div class="h-72 sm:h-80 w-full rounded-lg border border-border overflow-hidden shadow-card" aria-label="Map showing Khilbarirtek Boroitola Bazar"></div></div><a href="https://www.google.com/maps/dir/?api=1&amp;destination=23.7914513,90.430083" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 btn-outline-cyan whitespace-nowrap"><span>Get Directions</span>`);
+			_push(`<h3 class="text-xl font-bold text-foreground">Find Me Here</h3></div><div class="relative h-72 sm:h-80 w-full rounded-lg border border-border overflow-hidden shadow-card" aria-label="Map showing Khilbarirtek Boroitola Bazar">`);
+			if (!mapReady.value) _push(`<div class="absolute inset-0 flex items-center justify-center bg-card text-sm text-muted-foreground">Loading map...</div>`);
+			else _push(`<!---->`);
+			_push(`</div></div><a href="https://www.google.com/maps/dir/?api=1&amp;destination=23.7914513,90.430083" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 btn-outline-cyan whitespace-nowrap"><span>Get Directions</span>`);
 			_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 				icon: unref(faArrowUpRightFromSquare),
 				class: "w-4 h-4"
