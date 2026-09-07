@@ -37,7 +37,7 @@
 
         <!-- Structured Data: Person & WebSite (shared on every page) -->
         @foreach ($siteJsonLd ?? [] as $entry)
-            <script type="application/ld+json">{!! json_encode($entry) !!}</script>
+            <script type="application/ld+json">{!! json_encode($entry, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
         @endforeach
 
         <!-- Scripts -->

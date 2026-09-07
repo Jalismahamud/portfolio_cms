@@ -113,7 +113,7 @@ function scrollToTop() {
 </script>
 
 <template>
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b border-border">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b border-border" @keydown.esc="isMobileMenuOpen = false">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <!-- Logo -->
@@ -151,6 +151,7 @@ function scrollToTop() {
                         @click="isMobileMenuOpen = !isMobileMenuOpen"
                         :aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
                         :aria-expanded="isMobileMenuOpen"
+                        aria-controls="mobile-navigation"
                         class="lg:hidden p-2 rounded-lg bg-card border border-border hover:bg-accent/10 transition-colors"
                     >
                         <FontAwesomeIcon v-if="isMobileMenuOpen" :icon="faXmark" class="w-5 h-5 text-accent" />
@@ -186,7 +187,7 @@ function scrollToTop() {
             </div>
 
             <!-- Mobile Navigation Menu -->
-            <div v-if="isMobileMenuOpen" class="lg:hidden border-t border-border mt-4 pt-4 pb-6 animate-fade-in">
+            <div v-if="isMobileMenuOpen" id="mobile-navigation" class="lg:hidden border-t border-border mt-4 pt-4 pb-6 animate-fade-in" role="navigation" aria-label="Mobile navigation">
                 <div class="space-y-3">
                     <button
                         v-for="item in navItems"

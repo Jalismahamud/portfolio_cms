@@ -4,12 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps({
-    images: { type: Array, required: true }, // [{ src, alt }]
+    images: { type: Array, required: true },
     autoPlayInterval: { type: Number, default: 4000 },
 });
 
 const currentIndex = ref(0);
 const isHovered = ref(false);
+const prefersReducedMotion = ref(false);
 const fallbackImage = '/og-image.webp';
 let intervalId = null;
 
@@ -21,6 +22,7 @@ function useFallbackImage(event) {
 
 function startAutoPlay() {
     stopAutoPlay();
+    if (prefersReducedMotion.value || props.images.length < 2) return;
     intervalId = setInterval(() => {
         currentIndex.value = (currentIndex.value + 1) % props.images.length;
     }, props.autoPlayInterval);
@@ -49,6 +51,7 @@ function goToSlide(index) {
 }
 
 onMounted(() => {
+    prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!isHovered.value) startAutoPlay();
 });
 

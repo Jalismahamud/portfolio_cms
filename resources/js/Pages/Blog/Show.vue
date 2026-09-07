@@ -4,6 +4,7 @@ import { Link, usePage } from '@inertiajs/vue3';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faArrowLeft, faCalendar, faClock, faUser, faTag } from '@fortawesome/free-solid-svg-icons';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import { truncateForMeta } from '@/Composables/useSeo';
 import Seo from '@/Components/Portfolio/Seo.vue';
 import Navigation from '@/Components/Portfolio/Navigation.vue';
@@ -13,7 +14,7 @@ const props = defineProps({
 });
 
 const page = usePage();
-const renderedContent = computed(() => marked.parse(props.post.content || ''));
+const renderedContent = computed(() => DOMPurify.sanitize(marked.parse(props.post.content || '')));
 const seoDescription = computed(() => truncateForMeta(props.post.excerpt || ''));
 
 function formatDate(date) {
@@ -44,9 +45,9 @@ function formatDate(date) {
                 '@context': 'https://schema.org',
                 '@type': 'BreadcrumbList',
                 itemListElement: [
-                    { '@type': 'ListItem', position: 1, name: 'Home', item: '/' },
-                    { '@type': 'ListItem', position: 2, name: 'Blog', item: '/blog' },
-                    { '@type': 'ListItem', position: 3, name: post.title, item: `/blog/${post.slug}` },
+                    { '@type': 'ListItem', position: 1, name: 'Home', item: `${page.props.siteUrl}/` },
+                    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${page.props.siteUrl}/blog` },
+                    { '@type': 'ListItem', position: 3, name: post.title, item: `${page.props.siteUrl}/blog/${post.slug}` },
                 ],
             },
         ]"

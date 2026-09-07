@@ -1,15 +1,23 @@
 <script setup>
-import { ref } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faGraduationCap, faCalendar, faLocationDot, faAward, faBook, faEye, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps({
     education: { type: Array, default: () => [] },
     certifications: { type: Array, default: () => [] },
-    skillGroups: { type: Array, default: () => [] }, // [{ category, items: [{ item_text }] }]
+    skillGroups: { type: Array, default: () => [] },
 });
 
 const selectedImage = ref(null);
+const modalElement = ref(null);
+
+watch(selectedImage, async (value) => {
+    if (value) {
+        await nextTick();
+        modalElement.value?.focus();
+    }
+});
 
 function formatIssueDate(date) {
     return new Date(date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -185,8 +193,10 @@ function formatIssueDate(date) {
                             v-if="selectedImage"
                             class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
                             @click.self="selectedImage = null"
+                            @keydown.esc="selectedImage = null"
                         >
-                            <div class="relative bg-background/95 backdrop-blur-sm border border-accent/20 rounded-lg p-4 sm:p-6 max-w-2xl sm:max-w-3xl lg:max-w-4xl w-full max-h-[95vh] overflow-hidden">
+                            <div ref="modalElement" class="relative bg-background/95 backdrop-blur-sm border border-accent/20 rounded-lg p-4 sm:p-6 max-w-2xl sm:max-w-3xl lg:max-w-4xl w-full max-h-[95vh] overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="certificate-preview-title" tabindex="-1">
+                                <h2 id="certificate-preview-title" class="sr-only">Certificate preview</h2>
                                 <button
                                     @click="selectedImage = null"
                                     class="absolute top-3 right-3 p-2 rounded-full bg-card border border-border hover:bg-accent/10 transition-colors z-10"

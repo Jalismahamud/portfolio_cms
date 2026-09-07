@@ -25,7 +25,9 @@ Route::get('/project/{slug}', [ProjectController::class, 'show'])->name('project
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:contact')
+    ->name('contact.store');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

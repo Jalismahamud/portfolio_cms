@@ -1,9 +1,10 @@
-import { Fragment, computed, createBlock, createCommentVNode, createSSRApp, createTextVNode, createVNode, h, mergeProps, nextTick, onMounted, onUnmounted, openBlock, ref, renderList, renderSlot, resolveDynamicComponent, toDisplayString, unref, useModel, useSSRContext, watch, withCtx, withKeys, withModifiers } from "vue";
-import { ssrGetDynamicModelProps, ssrIncludeBooleanAttr, ssrInterpolate, ssrLooseContain, ssrRenderAttr, ssrRenderAttrs, ssrRenderClass, ssrRenderComponent, ssrRenderList, ssrRenderSlot, ssrRenderStyle, ssrRenderTeleport, ssrRenderVNode } from "vue/server-renderer";
+import { Fragment, computed, createBlock, createCommentVNode, createSSRApp, createTextVNode, createVNode, h, mergeProps, nextTick, onBeforeUnmount, onMounted, onUnmounted, openBlock, ref, renderList, renderSlot, resolveDynamicComponent, toDisplayString, unref, useModel, useSSRContext, watch, withCtx, withKeys, withModifiers } from "vue";
+import { ssrGetDynamicModelProps, ssrIncludeBooleanAttr, ssrInterpolate, ssrLooseContain, ssrLooseEqual, ssrRenderAttr, ssrRenderAttrs, ssrRenderClass, ssrRenderComponent, ssrRenderList, ssrRenderSlot, ssrRenderStyle, ssrRenderTeleport, ssrRenderVNode } from "vue/server-renderer";
 import { Head, Link, createInertiaApp, router, useForm, usePage } from "@inertiajs/vue3";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faArrowLeft, faArrowRight, faArrowUp, faArrowUpRightFromSquare, faAward, faBars, faBolt, faBook, faBriefcase, faCalendar, faChevronLeft, faChevronRight, faClock, faCloud, faCode, faCodeBranch, faComment, faDatabase, faEnvelope, faEye, faFileArrowDown, faFilter, faFolderOpen, faGears, faGlobe, faGraduationCap, faHouse, faIdCard, faImage, faInbox, faLayerGroup, faLocationDot, faMagnifyingGlass, faMessage, faMicrochip, faMobileScreen, faMoon, faPaperPlane, faPhone, faServer, faShareNodes, faSpinner, faSun, faTag, faUser, faWandMagicSparkles, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight, faArrowUp, faArrowUpRightFromSquare, faAward, faBars, faBolt, faBook, faBriefcase, faCalendar, faCheck, faChevronLeft, faChevronRight, faClock, faCloud, faCode, faCodeBranch, faComment, faDatabase, faEnvelope, faEye, faFileArrowDown, faFilter, faFolderOpen, faGears, faGlobe, faGraduationCap, faHouse, faIdCard, faImage, faInbox, faLayerGroup, faLocationDot, faMagnifyingGlass, faMessage, faMicrochip, faMobileScreen, faMoon, faPaperPlane, faPhone, faServer, faShareNodes, faSpinner, faSun, faTag, faUser, faWandMagicSparkles, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { marked } from "marked";
+import DOMPurify from "dompurify";
 import { faBootstrap, faCss3Alt, faFacebookF, faGitAlt, faGithub, faHtml5, faInstagram, faJs, faLaravel, faLinkedinIn, faMarkdown, faMedium, faNode, faPhp, faStackOverflow, faVuejs, faWordpress, faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import createServer from "@inertiajs/vue3/server";
 import { renderToString } from "@vue/server-renderer";
@@ -1208,10 +1209,11 @@ var _sfc_main$33 = {
 		},
 		logoUrl: {
 			type: String,
-			default: null
+			default: "/logo.webp"
 		}
 	},
 	setup(__props) {
+		const props = __props;
 		const navItems = [
 			{
 				id: "about",
@@ -1239,8 +1241,13 @@ var _sfc_main$33 = {
 				href: "#blog"
 			},
 			{
+				id: "ai",
+				label: "06. AI",
+				href: "#ai"
+			},
+			{
 				id: "contact",
-				label: "06. Contact",
+				label: "07. Contact",
 				href: "#contact"
 			}
 		];
@@ -1249,6 +1256,7 @@ var _sfc_main$33 = {
 		const isMobileMenuOpen = ref(false);
 		const page = usePage();
 		const isHome = computed(() => page.url === "/" || page.url.startsWith("/#"));
+		const resolvedLogoUrl = computed(() => page.props.siteSettings?.logo_url || props.logoUrl);
 		function splitLabel(label) {
 			const [num, ...rest] = label.split(". ");
 			return {
@@ -1311,16 +1319,19 @@ var _sfc_main$33 = {
 			}, {
 				default: withCtx((_, _push, _parent, _scopeId) => {
 					if (_push) {
-						if (__props.logoUrl) _push(`<img${ssrRenderAttr("src", __props.logoUrl)} alt="Logo" width="96" height="112" class="h-28 w-24 sm:h-24 sm:w-20 animate-logo-orbit z-10 relative cursor-pointer"${_scopeId}>`);
+						if (resolvedLogoUrl.value) _push(`<img${ssrRenderAttr("src", resolvedLogoUrl.value)} alt="Logo" width="96" height="112" class="h-28 w-24 sm:h-24 sm:w-20 animate-logo-orbit z-10 relative cursor-pointer"${_scopeId}>`);
 						else _push(`<!---->`);
-					} else return [__props.logoUrl ? (openBlock(), createBlock("img", {
+					} else return [resolvedLogoUrl.value ? (openBlock(), createBlock("img", {
 						key: 0,
-						src: __props.logoUrl,
+						src: resolvedLogoUrl.value,
 						alt: "Logo",
+						onError: (event) => {
+							event.target.src = "/logo.webp";
+						},
 						width: "96",
 						height: "112",
 						class: "h-28 w-24 sm:h-24 sm:w-20 animate-logo-orbit z-10 relative cursor-pointer"
-					}, null, 8, ["src"])) : createCommentVNode("", true)];
+					}, null, 40, ["src", "onError"])) : createCommentVNode("", true)];
 				}),
 				_: 1
 			}, _parent));
@@ -1328,7 +1339,7 @@ var _sfc_main$33 = {
 			ssrRenderList(navItems, (item) => {
 				_push(`<button class="${ssrRenderClass([{ active: activeSection.value === item.id }, "nav-link text-sm xl:text-base"])}"><span class="section-number">${ssrInterpolate(splitLabel(item.label).num)}</span><span class="ml-1">${ssrInterpolate(splitLabel(item.label).text)}</span></button>`);
 			});
-			_push(`<!--]--></div><div class="flex items-center space-x-2 sm:space-x-3"><button${ssrRenderAttr("aria-label", isMobileMenuOpen.value ? "Close menu" : "Open menu")}${ssrRenderAttr("aria-expanded", isMobileMenuOpen.value)} class="lg:hidden p-2 rounded-lg bg-card border border-border hover:bg-accent/10 transition-colors">`);
+			_push(`<!--]--></div><div class="flex items-center space-x-2 sm:space-x-3"><button${ssrRenderAttr("aria-label", isMobileMenuOpen.value ? "Close menu" : "Open menu")}${ssrRenderAttr("aria-expanded", isMobileMenuOpen.value)} aria-controls="mobile-navigation" class="lg:hidden p-2 rounded-lg bg-card border border-border hover:bg-accent/10 transition-colors">`);
 			if (isMobileMenuOpen.value) _push(ssrRenderComponent(unref(FontAwesomeIcon), {
 				icon: unref(faXmark),
 				class: "w-5 h-5 text-accent"
@@ -1358,7 +1369,7 @@ var _sfc_main$33 = {
 			}, null, _parent));
 			_push(`<span>Resume</span></a></div></div>`);
 			if (isMobileMenuOpen.value) {
-				_push(`<div class="lg:hidden border-t border-border mt-4 pt-4 pb-6 animate-fade-in"><div class="space-y-3"><!--[-->`);
+				_push(`<div id="mobile-navigation" class="lg:hidden border-t border-border mt-4 pt-4 pb-6 animate-fade-in" role="navigation" aria-label="Mobile navigation"><div class="space-y-3"><!--[-->`);
 				ssrRenderList(navItems, (item) => {
 					_push(`<button class="${ssrRenderClass([activeSection.value === item.id ? "active bg-accent/10 text-accent" : "hover:bg-accent/5 text-muted-foreground hover:text-accent", "nav-link w-full text-left py-3 px-4 rounded-lg transition-colors"])}"><span class="section-number text-sm mr-2">${ssrInterpolate(splitLabel(item.label).num)}</span><span class="text-sm">${ssrInterpolate(splitLabel(item.label).text)}</span></button>`);
 				});
@@ -1624,7 +1635,7 @@ var _sfc_main$31 = {
 	setup(__props) {
 		const props = __props;
 		const page = usePage();
-		const renderedContent = computed(() => marked.parse(props.post.content || ""));
+		const renderedContent = computed(() => DOMPurify.sanitize(marked.parse(props.post.content || "")));
 		const seoDescription = computed(() => truncateForMeta(props.post.excerpt || ""));
 		function formatDate(date) {
 			return new Date(date).toLocaleDateString("en-US", {
@@ -1662,19 +1673,19 @@ var _sfc_main$31 = {
 							"@type": "ListItem",
 							position: 1,
 							name: "Home",
-							item: "/"
+							item: `${unref(page).props.siteUrl}/`
 						},
 						{
 							"@type": "ListItem",
 							position: 2,
 							name: "Blog",
-							item: "/blog"
+							item: `${unref(page).props.siteUrl}/blog`
 						},
 						{
 							"@type": "ListItem",
 							position: 3,
 							name: __props.post.title,
-							item: `/blog/${__props.post.slug}`
+							item: `${unref(page).props.siteUrl}/blog/${__props.post.slug}`
 						}
 					]
 				}]
@@ -2219,6 +2230,7 @@ var _sfc_main$23 = {
 		const serviceText = ref("");
 		const serviceIndex = ref(0);
 		const isTyping = ref(true);
+		const prefersReducedMotion = ref(false);
 		const stars = Array.from({ length: 20 }, () => ({
 			left: `${Math.random() * 100}%`,
 			top: `${Math.random() * 100}%`,
@@ -2258,10 +2270,14 @@ var _sfc_main$23 = {
 			}
 		}
 		onMounted(() => {
+			prefersReducedMotion.value = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 			clockTimer = setInterval(() => {
 				currentTime.value = /* @__PURE__ */ new Date();
 			}, 1e3);
-			tickTyping();
+			if (prefersReducedMotion.value) {
+				serviceText.value = serviceList[0];
+				isTyping.value = false;
+			} else tickTyping();
 		});
 		onUnmounted(() => {
 			if (clockTimer) clearInterval(clockTimer);
@@ -2395,9 +2411,11 @@ var _sfc_main$21 = {
 		const props = __props;
 		const currentIndex = ref(0);
 		const isHovered = ref(false);
+		const prefersReducedMotion = ref(false);
 		let intervalId = null;
 		function startAutoPlay() {
 			stopAutoPlay();
+			if (prefersReducedMotion.value || props.images.length < 2) return;
 			intervalId = setInterval(() => {
 				currentIndex.value = (currentIndex.value + 1) % props.images.length;
 			}, props.autoPlayInterval);
@@ -2409,15 +2427,16 @@ var _sfc_main$21 = {
 			}
 		}
 		onMounted(() => {
+			prefersReducedMotion.value = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 			if (!isHovered.value) startAutoPlay();
 		});
 		onUnmounted(() => {
 			stopAutoPlay();
 		});
 		return (_ctx, _push, _parent, _attrs) => {
-			_push(`<div${ssrRenderAttrs(mergeProps({ class: "group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-accent/5 to-primary/5 p-1" }, _attrs))} data-v-c17f6511><div class="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-card" data-v-c17f6511><div class="absolute inset-0" data-v-c17f6511><img${ssrRenderAttr("src", __props.images[currentIndex.value].src)}${ssrRenderAttr("alt", __props.images[currentIndex.value].alt)} decoding="async" class="h-full w-full object-cover" data-v-c17f6511><div class="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" data-v-c17f6511></div></div>`);
+			_push(`<div${ssrRenderAttrs(mergeProps({ class: "group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-accent/5 to-primary/5 p-1" }, _attrs))} data-v-3b5aa330><div class="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-card" data-v-3b5aa330><div class="absolute inset-0" data-v-3b5aa330><img${ssrRenderAttr("src", __props.images[currentIndex.value].src)}${ssrRenderAttr("alt", __props.images[currentIndex.value].alt)} decoding="async" class="h-full w-full object-cover" data-v-3b5aa330><div class="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" data-v-3b5aa330></div></div>`);
 			if (__props.images.length > 1) {
-				_push(`<button class="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-accent/20 hover:border-accent transition-all duration-300 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 z-10" aria-label="Previous image" data-v-c17f6511>`);
+				_push(`<button class="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-accent/20 hover:border-accent transition-all duration-300 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 z-10" aria-label="Previous image" data-v-3b5aa330>`);
 				_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 					icon: unref(faChevronLeft),
 					class: "w-5 h-5 text-foreground"
@@ -2425,21 +2444,21 @@ var _sfc_main$21 = {
 				_push(`</button>`);
 			} else _push(`<!---->`);
 			if (__props.images.length > 1) {
-				_push(`<button class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-accent/20 hover:border-accent transition-all duration-300 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 z-10" aria-label="Next image" data-v-c17f6511>`);
+				_push(`<button class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-accent/20 hover:border-accent transition-all duration-300 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 z-10" aria-label="Next image" data-v-3b5aa330>`);
 				_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 					icon: unref(faChevronRight),
 					class: "w-5 h-5 text-foreground"
 				}, null, _parent));
 				_push(`</button>`);
 			} else _push(`<!---->`);
-			_push(`<div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm border border-border text-xs text-foreground font-medium" data-v-c17f6511>${ssrInterpolate(currentIndex.value + 1)} / ${ssrInterpolate(__props.images.length)}</div></div><div class="flex justify-center gap-2 mt-4 pb-2" data-v-c17f6511><!--[-->`);
+			_push(`<div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm border border-border text-xs text-foreground font-medium" data-v-3b5aa330>${ssrInterpolate(currentIndex.value + 1)} / ${ssrInterpolate(__props.images.length)}</div></div><div class="flex justify-center gap-2 mt-4 pb-2" data-v-3b5aa330><!--[-->`);
 			ssrRenderList(__props.images, (_, index) => {
-				_push(`<button class="${ssrRenderClass([index === currentIndex.value ? "w-6 h-2 bg-accent" : "w-2 h-2 bg-muted-foreground/40 hover:bg-muted-foreground/60", "transition-all duration-300 rounded-full"])}"${ssrRenderAttr("aria-label", `Go to slide ${index + 1}`)} data-v-c17f6511></button>`);
+				_push(`<button class="${ssrRenderClass([index === currentIndex.value ? "w-6 h-2 bg-accent" : "w-2 h-2 bg-muted-foreground/40 hover:bg-muted-foreground/60", "transition-all duration-300 rounded-full"])}"${ssrRenderAttr("aria-label", `Go to slide ${index + 1}`)} data-v-3b5aa330></button>`);
 			});
-			_push(`<!--]--></div><div class="flex gap-2 mt-2 overflow-x-auto pb-2 px-1 scrollbar-hide" data-v-c17f6511><!--[-->`);
+			_push(`<!--]--></div><div class="flex gap-2 mt-2 overflow-x-auto pb-2 px-1 scrollbar-hide" data-v-3b5aa330><!--[-->`);
 			ssrRenderList(__props.images, (image, index) => {
-				_push(`<button class="${ssrRenderClass([index === currentIndex.value ? "border-accent ring-2 ring-accent/30" : "border-transparent hover:border-accent/50", "relative flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all duration-300 hover:scale-105"])}" data-v-c17f6511><img${ssrRenderAttr("src", image.src)}${ssrRenderAttr("alt", image.alt)} loading="lazy" decoding="async" width="64" height="48" class="w-full h-full object-cover" data-v-c17f6511>`);
-				if (index === currentIndex.value) _push(`<div class="absolute inset-0 bg-accent/20" data-v-c17f6511></div>`);
+				_push(`<button class="${ssrRenderClass([index === currentIndex.value ? "border-accent ring-2 ring-accent/30" : "border-transparent hover:border-accent/50", "relative flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all duration-300 hover:scale-105"])}" data-v-3b5aa330><img${ssrRenderAttr("src", image.src)}${ssrRenderAttr("alt", image.alt)} loading="lazy" decoding="async" width="64" height="48" class="w-full h-full object-cover" data-v-3b5aa330>`);
+				if (index === currentIndex.value) _push(`<div class="absolute inset-0 bg-accent/20" data-v-3b5aa330></div>`);
 				else _push(`<!---->`);
 				_push(`</button>`);
 			});
@@ -2453,7 +2472,7 @@ _sfc_main$21.setup = (props, ctx) => {
 	(ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("resources/js/Components/Portfolio/ImageGallerySlider.vue");
 	return _sfc_setup$21 ? _sfc_setup$21(props, ctx) : void 0;
 };
-var ImageGallerySlider_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main$21, [["__scopeId", "data-v-c17f6511"]]);
+var ImageGallerySlider_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main$21, [["__scopeId", "data-v-3b5aa330"]]);
 //#endregion
 //#region resources/js/Components/Portfolio/About.vue
 var _sfc_main$20 = {
@@ -2484,10 +2503,10 @@ var _sfc_main$20 = {
 	setup(__props) {
 		const props = __props;
 		const bioParagraphs = (props.bio || "").split("\n").filter((p) => p.trim().length > 0);
-		const sliderImages = [...props.profilePhoto ? [{
-			src: props.profilePhoto,
+		const sliderImages = [[{
+			src: props.profilePhoto || "/og-image.webp",
 			alt: "Profile photo"
-		}] : [], ...props.galleryImages.map((g) => ({
+		}], ...props.galleryImages.map((g) => ({
 			src: g.image,
 			alt: g.alt_text || "Gallery photo"
 		}))];
@@ -2648,12 +2667,19 @@ var _sfc_main$18 = {
 							createVNode("img", {
 								src: project.images?.[0]?.image_path,
 								alt: `Screenshot of ${project.title}`,
+								onError: (event) => {
+									event.target.src = "/og-image.webp";
+								},
 								loading: "lazy",
 								decoding: "async",
 								width: "1200",
 								height: "800",
 								class: "w-full h-64 sm:h-80 lg:h-96 object-cover transition-transform duration-700 group-hover:scale-110"
-							}, null, 8, ["src", "alt"]),
+							}, null, 40, [
+								"src",
+								"alt",
+								"onError"
+							]),
 							createVNode("div", { class: "absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" }),
 							createVNode("div", { class: "absolute inset-0 bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center" }, [createVNode(unref(FontAwesomeIcon), {
 								icon: unref(faEye),
@@ -2696,14 +2722,20 @@ var _sfc_main$18 = {
 			});
 			_push(`<!--]--></div></div><div><h3 class="text-xl sm:text-2xl font-bold text-accent mb-6 sm:mb-8" data-aos="fade-up">Other Projects</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"><!--[-->`);
 			ssrRenderList(__props.otherProjects, (project, index) => {
-				_push(`<div role="link" tabindex="0" class="bg-card border border-border rounded-lg p-4 sm:p-6 card-hover group hover:scale-105 transition-all duration-300 block cursor-pointer hover:border-accent/50" data-aos="fade-up"${ssrRenderAttr("data-aos-delay", index * 100)}><div class="flex items-center justify-between mb-4"><div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent/20 transition-colors">`);
+				_push(`<div class="relative bg-card border border-border rounded-lg p-4 sm:p-6 card-hover group hover:scale-105 transition-all duration-300 block hover:border-accent/50" data-aos="fade-up"${ssrRenderAttr("data-aos-delay", index * 100)}>`);
+				_push(ssrRenderComponent(unref(Link), {
+					href: `/project/${project.slug}`,
+					class: "absolute inset-0 z-0 rounded-lg",
+					"aria-label": `View ${project.title} project`
+				}, null, _parent));
+				_push(`<div class="relative z-10 pointer-events-none"><div class="flex items-center justify-between mb-4"><div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent/20 transition-colors">`);
 				_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 					icon: unref(faEye),
 					class: "w-6 h-6 text-accent group-hover:scale-110 transition-transform"
 				}, null, _parent));
 				_push(`</div><div class="flex items-center space-x-3">`);
 				if (project.github_url) {
-					_push(`<a${ssrRenderAttr("href", project.github_url)} target="_blank" rel="noopener noreferrer" class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform">`);
+					_push(`<a${ssrRenderAttr("href", project.github_url)} target="_blank" rel="noopener noreferrer" class="relative z-20 pointer-events-auto text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform" aria-label="View GitHub repository">`);
 					_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 						icon: unref(faGithub),
 						class: "w-5 h-5"
@@ -2711,7 +2743,7 @@ var _sfc_main$18 = {
 					_push(`</a>`);
 				} else _push(`<!---->`);
 				if (project.live_url) {
-					_push(`<a${ssrRenderAttr("href", project.live_url)} target="_blank" rel="noopener noreferrer" class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform">`);
+					_push(`<a${ssrRenderAttr("href", project.live_url)} target="_blank" rel="noopener noreferrer" class="relative z-20 pointer-events-auto text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform" aria-label="View live project">`);
 					_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 						icon: unref(faArrowUpRightFromSquare),
 						class: "w-5 h-5"
@@ -2725,7 +2757,7 @@ var _sfc_main$18 = {
 				_push(`<!--]-->`);
 				if (project.technologies.length > 3) _push(`<span class="text-xs font-mono text-muted-foreground"> +${ssrInterpolate(project.technologies.length - 3)}</span>`);
 				else _push(`<!---->`);
-				_push(`</div></div>`);
+				_push(`</div></div></div>`);
 			});
 			_push(`<!--]--></div></div><div class="text-center mt-12" data-aos="fade-up">`);
 			_push(ssrRenderComponent(unref(Link), {
@@ -2840,6 +2872,13 @@ var _sfc_main$16 = {
 	},
 	setup(__props) {
 		const selectedImage = ref(null);
+		const modalElement = ref(null);
+		watch(selectedImage, async (value) => {
+			if (value) {
+				await nextTick();
+				modalElement.value?.focus();
+			}
+		});
 		function formatIssueDate(date) {
 			return new Date(date).toLocaleDateString("en-US", {
 				month: "long",
@@ -2850,108 +2889,108 @@ var _sfc_main$16 = {
 			_push(`<section${ssrRenderAttrs(mergeProps({
 				id: "education",
 				class: "section-padding bg-card/30"
-			}, _attrs))} data-v-8678c464><div class="w-full sm:max-w-2xl lg:max-w-6xl 2xl:max-w-7xl mx-auto" data-v-8678c464><div class="mb-20" data-aos="fade-right" data-v-8678c464><h2 class="section-header" data-v-8678c464><span class="section-number" data-v-8678c464>04.</span> My Qualifications </h2></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-16 xl:gap-20" data-v-8678c464><div class="lg:col-span-2 space-y-12" data-v-8678c464><div data-v-8678c464><h3 class="text-2xl font-bold text-accent mb-6 flex items-center" data-aos="fade-up" data-v-8678c464>`);
+			}, _attrs))} data-v-e9c0ea8e><div class="w-full sm:max-w-2xl lg:max-w-6xl 2xl:max-w-7xl mx-auto" data-v-e9c0ea8e><div class="mb-20" data-aos="fade-right" data-v-e9c0ea8e><h2 class="section-header" data-v-e9c0ea8e><span class="section-number" data-v-e9c0ea8e>04.</span> My Qualifications </h2></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-16 xl:gap-20" data-v-e9c0ea8e><div class="lg:col-span-2 space-y-12" data-v-e9c0ea8e><div data-v-e9c0ea8e><h3 class="text-2xl font-bold text-accent mb-6 flex items-center" data-aos="fade-up" data-v-e9c0ea8e>`);
 			_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 				icon: unref(faGraduationCap),
 				class: "w-6 h-6 mr-2"
 			}, null, _parent));
 			_push(` Formal Education </h3><!--[-->`);
 			ssrRenderList(__props.education, (edu, index) => {
-				_push(`<div class="bg-card border border-border rounded-lg p-6 sm:p-8 lg:p-10 xl:p-12 mb-8 shadow-card hover:shadow-elegant transition-all duration-300" data-aos="fade-up"${ssrRenderAttr("data-aos-delay", index * 100)} data-v-8678c464><div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-v-8678c464><div class="md:col-span-1" data-v-8678c464><div class="bg-accent/10 border border-accent/20 rounded-lg p-4" data-v-8678c464><h4 class="font-bold text-foreground text-lg mb-2" data-v-8678c464>${ssrInterpolate(edu.degree)}</h4><p class="text-accent font-semibold mb-3" data-v-8678c464>${ssrInterpolate(edu.institution)}</p><div class="space-y-2 text-sm text-muted-foreground" data-v-8678c464><div class="flex items-center space-x-2" data-v-8678c464>`);
+				_push(`<div class="bg-card border border-border rounded-lg p-6 sm:p-8 lg:p-10 xl:p-12 mb-8 shadow-card hover:shadow-elegant transition-all duration-300" data-aos="fade-up"${ssrRenderAttr("data-aos-delay", index * 100)} data-v-e9c0ea8e><div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-v-e9c0ea8e><div class="md:col-span-1" data-v-e9c0ea8e><div class="bg-accent/10 border border-accent/20 rounded-lg p-4" data-v-e9c0ea8e><h4 class="font-bold text-foreground text-lg mb-2" data-v-e9c0ea8e>${ssrInterpolate(edu.degree)}</h4><p class="text-accent font-semibold mb-3" data-v-e9c0ea8e>${ssrInterpolate(edu.institution)}</p><div class="space-y-2 text-sm text-muted-foreground" data-v-e9c0ea8e><div class="flex items-center space-x-2" data-v-e9c0ea8e>`);
 				_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 					icon: unref(faCalendar),
 					class: "w-4 h-4 text-accent"
 				}, null, _parent));
-				_push(`<span data-v-8678c464>${ssrInterpolate(edu.start_year)}${ssrInterpolate(edu.end_year ? ` - ${edu.end_year}` : "")}</span></div>`);
+				_push(`<span data-v-e9c0ea8e>${ssrInterpolate(edu.start_year)}${ssrInterpolate(edu.end_year ? ` - ${edu.end_year}` : "")}</span></div>`);
 				if (edu.location) {
-					_push(`<div class="flex items-center space-x-2" data-v-8678c464>`);
+					_push(`<div class="flex items-center space-x-2" data-v-e9c0ea8e>`);
 					_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 						icon: unref(faLocationDot),
 						class: "w-4 h-4 text-accent"
 					}, null, _parent));
-					_push(`<span data-v-8678c464>${ssrInterpolate(edu.location)}</span></div>`);
+					_push(`<span data-v-e9c0ea8e>${ssrInterpolate(edu.location)}</span></div>`);
 				} else _push(`<!---->`);
 				if (edu.grade) {
-					_push(`<div class="flex items-center space-x-2" data-v-8678c464>`);
+					_push(`<div class="flex items-center space-x-2" data-v-e9c0ea8e>`);
 					_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 						icon: unref(faAward),
 						class: "w-4 h-4 text-accent"
 					}, null, _parent));
-					_push(`<span data-v-8678c464>${ssrInterpolate(edu.grade)}</span></div>`);
+					_push(`<span data-v-e9c0ea8e>${ssrInterpolate(edu.grade)}</span></div>`);
 				} else _push(`<!---->`);
-				_push(`</div></div></div><div class="md:col-span-2 space-y-6" data-v-8678c464>`);
-				if (edu.description) _push(`<p class="text-muted-foreground leading-relaxed" data-v-8678c464>${ssrInterpolate(edu.description)}</p>`);
+				_push(`</div></div></div><div class="md:col-span-2 space-y-6" data-v-e9c0ea8e>`);
+				if (edu.description) _push(`<p class="text-muted-foreground leading-relaxed" data-v-e9c0ea8e>${ssrInterpolate(edu.description)}</p>`);
 				else _push(`<!---->`);
 				if (edu.highlights?.length) {
-					_push(`<div data-v-8678c464><h5 class="font-semibold text-foreground mb-3" data-v-8678c464>Key Subjects:</h5><div class="grid grid-cols-1 sm:grid-cols-2 gap-2" data-v-8678c464><!--[-->`);
+					_push(`<div data-v-e9c0ea8e><h5 class="font-semibold text-foreground mb-3" data-v-e9c0ea8e>Key Subjects:</h5><div class="grid grid-cols-1 sm:grid-cols-2 gap-2" data-v-e9c0ea8e><!--[-->`);
 					ssrRenderList(edu.highlights, (highlight, i) => {
-						_push(`<div class="flex items-center space-x-2 text-sm text-muted-foreground" data-v-8678c464><div class="w-2 h-2 bg-accent rounded-full" data-v-8678c464></div><span data-v-8678c464>${ssrInterpolate(highlight)}</span></div>`);
+						_push(`<div class="flex items-center space-x-2 text-sm text-muted-foreground" data-v-e9c0ea8e><div class="w-2 h-2 bg-accent rounded-full" data-v-e9c0ea8e></div><span data-v-e9c0ea8e>${ssrInterpolate(highlight)}</span></div>`);
 					});
 					_push(`<!--]--></div></div>`);
 				} else _push(`<!---->`);
 				if (edu.projects_note?.length) {
-					_push(`<div data-v-8678c464><h5 class="font-semibold text-foreground mb-3" data-v-8678c464>Projects:</h5><ul class="space-y-1" data-v-8678c464><!--[-->`);
+					_push(`<div data-v-e9c0ea8e><h5 class="font-semibold text-foreground mb-3" data-v-e9c0ea8e>Projects:</h5><ul class="space-y-1" data-v-e9c0ea8e><!--[-->`);
 					ssrRenderList(edu.projects_note, (project, i) => {
-						_push(`<li class="flex items-start space-x-2 text-sm text-muted-foreground" data-v-8678c464><div class="w-2 h-2 bg-highlight rounded-full mt-2" data-v-8678c464></div><span data-v-8678c464>${ssrInterpolate(project)}</span></li>`);
+						_push(`<li class="flex items-start space-x-2 text-sm text-muted-foreground" data-v-e9c0ea8e><div class="w-2 h-2 bg-highlight rounded-full mt-2" data-v-e9c0ea8e></div><span data-v-e9c0ea8e>${ssrInterpolate(project)}</span></li>`);
 					});
 					_push(`<!--]--></ul></div>`);
 				} else _push(`<!---->`);
 				_push(`</div></div></div>`);
 			});
-			_push(`<!--]--></div></div><div class="space-y-8" data-v-8678c464><h3 class="text-2xl font-bold text-accent mb-6" data-aos="fade-left" data-v-8678c464>Skills Overview</h3><!--[-->`);
+			_push(`<!--]--></div></div><div class="space-y-8" data-v-e9c0ea8e><h3 class="text-2xl font-bold text-accent mb-6" data-aos="fade-left" data-v-e9c0ea8e>Skills Overview</h3><!--[-->`);
 			ssrRenderList(__props.skillGroups, (group, index) => {
-				_push(`<div class="bg-card border border-border rounded-lg p-6 sm:p-7 lg:p-8 xl:p-10 shadow-card hover:shadow-elegant transition-all duration-300 group" data-aos="fade-left"${ssrRenderAttr("data-aos-delay", index * 100)} data-v-8678c464><h4 class="font-semibold text-foreground mb-3 text-sm group-hover:text-accent transition-colors" data-v-8678c464>${ssrInterpolate(group.category)}</h4><div class="flex flex-wrap gap-1" data-v-8678c464><!--[-->`);
+				_push(`<div class="bg-card border border-border rounded-lg p-6 sm:p-7 lg:p-8 xl:p-10 shadow-card hover:shadow-elegant transition-all duration-300 group" data-aos="fade-left"${ssrRenderAttr("data-aos-delay", index * 100)} data-v-e9c0ea8e><h4 class="font-semibold text-foreground mb-3 text-sm group-hover:text-accent transition-colors" data-v-e9c0ea8e>${ssrInterpolate(group.category)}</h4><div class="flex flex-wrap gap-1" data-v-e9c0ea8e><!--[-->`);
 				ssrRenderList(group.items, (item) => {
-					_push(`<span class="px-2 py-1 bg-secondary text-accent text-xs rounded border border-border hover:bg-accent/10 hover:border-accent/30 transition-all duration-300 cursor-default" data-v-8678c464>${ssrInterpolate(item.item_text)}</span>`);
+					_push(`<span class="px-2 py-1 bg-secondary text-accent text-xs rounded border border-border hover:bg-accent/10 hover:border-accent/30 transition-all duration-300 cursor-default" data-v-e9c0ea8e>${ssrInterpolate(item.item_text)}</span>`);
 				});
 				_push(`<!--]--></div></div>`);
 			});
-			_push(`<!--]--></div></div><div class="mt-16 xl:mt-20" data-v-8678c464><h3 class="text-2xl font-bold text-accent mb-6 flex items-center" data-aos="fade-up" data-v-8678c464>`);
+			_push(`<!--]--></div></div><div class="mt-16 xl:mt-20" data-v-e9c0ea8e><h3 class="text-2xl font-bold text-accent mb-6 flex items-center" data-aos="fade-up" data-v-e9c0ea8e>`);
 			_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 				icon: unref(faBook),
 				class: "w-6 h-6 mr-2"
 			}, null, _parent));
-			_push(` Certifications </h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6" data-v-8678c464><!--[-->`);
+			_push(` Certifications </h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6" data-v-e9c0ea8e><!--[-->`);
 			ssrRenderList(__props.certifications, (cert, index) => {
-				_push(`<div class="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-card hover:shadow-elegant hover:border-accent/40 hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full" data-aos="fade-up"${ssrRenderAttr("data-aos-delay", index * 100)} data-v-8678c464>`);
+				_push(`<div class="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-card hover:shadow-elegant hover:border-accent/40 hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full" data-aos="fade-up"${ssrRenderAttr("data-aos-delay", index * 100)} data-v-e9c0ea8e>`);
 				if (cert.image) {
-					_push(`<div class="w-full h-36 sm:h-40 bg-white/[0.08] rounded-lg mb-4 overflow-hidden border border-accent/20 group-hover:border-accent/40 transition-colors cursor-pointer relative flex-shrink-0" data-v-8678c464><img${ssrRenderAttr("src", cert.image)}${ssrRenderAttr("alt", `${cert.title} certificate`)} loading="lazy" decoding="async" width="400" height="280" class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300" data-v-8678c464><div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center" data-v-8678c464>`);
+					_push(`<div class="w-full h-36 sm:h-40 bg-white/[0.08] rounded-lg mb-4 overflow-hidden border border-accent/20 group-hover:border-accent/40 transition-colors cursor-pointer relative flex-shrink-0" data-v-e9c0ea8e><img${ssrRenderAttr("src", cert.image)}${ssrRenderAttr("alt", `${cert.title} certificate`)} loading="lazy" decoding="async" width="400" height="280" class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300" data-v-e9c0ea8e><div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center" data-v-e9c0ea8e>`);
 					_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 						icon: unref(faEye),
 						class: "w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity"
 					}, null, _parent));
 					_push(`</div></div>`);
 				} else {
-					_push(`<div class="w-full h-36 sm:h-40 bg-accent/10 rounded-lg mb-4 flex items-center justify-center border border-accent/20 group-hover:border-accent/40 transition-colors flex-shrink-0" data-v-8678c464>`);
+					_push(`<div class="w-full h-36 sm:h-40 bg-accent/10 rounded-lg mb-4 flex items-center justify-center border border-accent/20 group-hover:border-accent/40 transition-colors flex-shrink-0" data-v-e9c0ea8e>`);
 					_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 						icon: unref(faBook),
 						class: "w-10 h-10 text-accent/50"
 					}, null, _parent));
 					_push(`</div>`);
 				}
-				_push(`<h4 class="font-semibold text-foreground mb-1.5 line-clamp-2 min-h-[2.75rem] group-hover:text-accent transition-colors" data-v-8678c464>${ssrInterpolate(cert.title)}</h4><p class="text-accent text-sm font-medium mb-1" data-v-8678c464>${ssrInterpolate(cert.provider)}</p><p class="text-muted-foreground text-xs mb-3 flex items-center gap-1.5" data-v-8678c464>`);
+				_push(`<h4 class="font-semibold text-foreground mb-1.5 line-clamp-2 min-h-[2.75rem] group-hover:text-accent transition-colors" data-v-e9c0ea8e>${ssrInterpolate(cert.title)}</h4><p class="text-accent text-sm font-medium mb-1" data-v-e9c0ea8e>${ssrInterpolate(cert.provider)}</p><p class="text-muted-foreground text-xs mb-3 flex items-center gap-1.5" data-v-e9c0ea8e>`);
 				_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 					icon: unref(faCalendar),
 					class: "w-3.5 h-3.5 flex-shrink-0"
 				}, null, _parent));
 				_push(` ${ssrInterpolate(formatIssueDate(cert.issue_date))}</p>`);
-				if (cert.description) _push(`<p class="text-muted-foreground text-xs mb-3 line-clamp-2" data-v-8678c464>${ssrInterpolate(cert.description)}</p>`);
+				if (cert.description) _push(`<p class="text-muted-foreground text-xs mb-3 line-clamp-2" data-v-e9c0ea8e>${ssrInterpolate(cert.description)}</p>`);
 				else _push(`<!---->`);
-				_push(`<div class="flex flex-wrap gap-1.5 mt-auto pt-1" data-v-8678c464><!--[-->`);
+				_push(`<div class="flex flex-wrap gap-1.5 mt-auto pt-1" data-v-e9c0ea8e><!--[-->`);
 				ssrRenderList(cert.skills, (skill, i) => {
-					_push(`<span class="px-2 py-1 bg-accent/10 text-accent text-xs rounded-full border border-accent/10" data-v-8678c464>${ssrInterpolate(skill)}</span>`);
+					_push(`<span class="px-2 py-1 bg-accent/10 text-accent text-xs rounded-full border border-accent/10" data-v-e9c0ea8e>${ssrInterpolate(skill)}</span>`);
 				});
 				_push(`<!--]--></div></div>`);
 			});
 			_push(`<!--]--></div>`);
 			ssrRenderTeleport(_push, (_push) => {
 				if (selectedImage.value) {
-					_push(`<div class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4" data-v-8678c464><div class="relative bg-background/95 backdrop-blur-sm border border-accent/20 rounded-lg p-4 sm:p-6 max-w-2xl sm:max-w-3xl lg:max-w-4xl w-full max-h-[95vh] overflow-hidden" data-v-8678c464><button class="absolute top-3 right-3 p-2 rounded-full bg-card border border-border hover:bg-accent/10 transition-colors z-10" aria-label="Close" data-v-8678c464>`);
+					_push(`<div class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4" data-v-e9c0ea8e><div class="relative bg-background/95 backdrop-blur-sm border border-accent/20 rounded-lg p-4 sm:p-6 max-w-2xl sm:max-w-3xl lg:max-w-4xl w-full max-h-[95vh] overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="certificate-preview-title" tabindex="-1" data-v-e9c0ea8e><h2 id="certificate-preview-title" class="sr-only" data-v-e9c0ea8e>Certificate preview</h2><button class="absolute top-3 right-3 p-2 rounded-full bg-card border border-border hover:bg-accent/10 transition-colors z-10" aria-label="Close" data-v-e9c0ea8e>`);
 					_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 						icon: unref(faXmark),
 						class: "w-5 h-5 text-foreground"
 					}, null, _parent));
-					_push(`</button><div class="flex items-center justify-center h-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px]" data-v-8678c464><img${ssrRenderAttr("src", selectedImage.value)} alt="Certificate preview, enlarged" decoding="async" class="max-w-full max-h-[80vh] w-auto h-auto object-contain rounded-lg shadow-2xl" draggable="false" data-v-8678c464></div></div></div>`);
+					_push(`</button><div class="flex items-center justify-center h-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px]" data-v-e9c0ea8e><img${ssrRenderAttr("src", selectedImage.value)} alt="Certificate preview, enlarged" decoding="async" class="max-w-full max-h-[80vh] w-auto h-auto object-contain rounded-lg shadow-2xl" draggable="false" data-v-e9c0ea8e></div></div></div>`);
 				} else _push(`<!---->`);
 			}, "body", false, _parent);
 			_push(`</div></div></section>`);
@@ -2964,7 +3003,7 @@ _sfc_main$16.setup = (props, ctx) => {
 	(ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("resources/js/Components/Portfolio/Education.vue");
 	return _sfc_setup$16 ? _sfc_setup$16(props, ctx) : void 0;
 };
-var Education_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main$16, [["__scopeId", "data-v-8678c464"]]);
+var Education_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main$16, [["__scopeId", "data-v-e9c0ea8e"]]);
 //#endregion
 //#region resources/js/Components/Portfolio/Blog.vue
 var _sfc_main$15 = {
@@ -3041,12 +3080,19 @@ var _sfc_main$15 = {
 							createVNode("img", {
 								src: post.image,
 								alt: post.title,
+								onError: (event) => {
+									event.target.src = "/og-image.webp";
+								},
 								loading: "lazy",
 								decoding: "async",
 								width: "500",
 								height: "224",
 								class: "w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-							}, null, 8, ["src", "alt"]),
+							}, null, 40, [
+								"src",
+								"alt",
+								"onError"
+							]),
 							createVNode("div", { class: "absolute inset-0 bg-gradient-to-t from-card to-transparent opacity-60" }),
 							post.category ? (openBlock(), createBlock("span", {
 								key: 0,
@@ -3203,7 +3249,7 @@ var _sfc_main$14 = {
 				icon: unref(faLayerGroup),
 				class: "w-5 h-5 text-accent"
 			}, null, _parent));
-			_push(`<span class="text-accent font-medium">AI Integration</span></div><h2 class="section-header"><span class="bg-gradient-to-r from-accent via-foreground to-accent bg-clip-text text-transparent">Artificial Intelligence</span></h2><p class="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto"> Exploring and integrating cutting-edge AI technologies to build intelligent, innovative solutions that transform user experiences. </p></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"><!--[-->`);
+			_push(`<span class="text-accent font-medium">AI Integration</span></div><h2 class="section-header"><span class="section-number">06.</span><span class="bg-gradient-to-r from-accent via-foreground to-accent bg-clip-text text-transparent">Artificial Intelligence</span></h2><p class="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto"> Exploring and integrating cutting-edge AI technologies to build intelligent, innovative solutions that transform user experiences. </p></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"><!--[-->`);
 			ssrRenderList(aiModels, (model, index) => {
 				_push(`<div class="${ssrRenderClass([model.color, "group relative bg-gradient-to-br border rounded-2xl p-6 card-hover"])}" data-aos="fade-up"${ssrRenderAttr("data-aos-delay", index * 100)}><div class="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div><div class="relative z-10"><div class="text-4xl mb-4">`);
 				_push(ssrRenderComponent(unref(FontAwesomeIcon), {
@@ -3400,24 +3446,95 @@ var _sfc_main$12 = {
 		}
 	},
 	setup(__props) {
-		usePage();
+		const props = __props;
+		const page = usePage();
+		const siteSettings = computed(() => page.props.siteSettings || {});
 		const form = useForm({
 			name: "",
 			email: "",
+			company: "",
+			inquiry_type: "",
+			budget_range: "",
 			subject: "",
-			message: ""
+			message: "",
+			website: ""
 		});
 		const toast = ref({
 			show: false,
 			title: "",
 			description: ""
 		});
+		const clientErrors = ref({});
+		const mapElement = ref(null);
+		let map;
+		const inquiryTypes = [
+			"Laravel Development",
+			"Full Stack Development",
+			"Web Application",
+			"E-commerce Development",
+			"REST API Development",
+			"AI Integration",
+			"ERP / Business Software",
+			"Portfolio / Website",
+			"General Inquiry",
+			"Other"
+		];
+		const budgetRanges = [
+			"Not Sure Yet",
+			"Under $500",
+			"$500 - $1,000",
+			"$1,000 - $3,000",
+			"$3,000+",
+			"Let's Discuss"
+		];
+		const contactItems = computed(() => {
+			const items = [...props.contactInfo];
+			const labels = items.map((item) => item.label?.toLowerCase());
+			if (!labels.some((label) => label?.includes("email"))) items.unshift({
+				id: "business-email",
+				icon: "Mail",
+				label: "Email",
+				value: "info@jalisdev.com",
+				href: "mailto:info@jalisdev.com"
+			});
+			if (!labels.some((label) => label?.includes("location"))) items.push({
+				id: "business-location",
+				icon: "MapPin",
+				label: "Location",
+				value: "Khilbarirtek Boroitola Bazar, Rohim Road, Vatara, Dhaka"
+			});
+			if (!labels.some((label) => label?.includes("website"))) items.push({
+				id: "business-website",
+				icon: "IdCard",
+				label: "Website",
+				value: "jalisdev.com",
+				href: "https://jalisdev.com"
+			});
+			return items;
+		});
+		const footerOwnerName = computed(() => siteSettings.value.site_name || props.ownerName);
+		const footerDescription = computed(() => siteSettings.value.footer_description || "Building thoughtful digital products with a focus on dependable user experiences.");
+		const copyrightText = computed(() => (siteSettings.value.copyright_text || "© {year} {name}. All rights reserved.").replace("{year}", (/* @__PURE__ */ new Date()).getFullYear()).replace("{name}", footerOwnerName.value));
+		function fieldError(field) {
+			return clientErrors.value[field] || form.errors[field];
+		}
+		onMounted(async () => {
+			const { default: L } = await import("leaflet");
+			if (!mapElement.value) return;
+			map = L.map(mapElement.value, { scrollWheelZoom: false }).setView([23.7914513, 90.430083], 16);
+			L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+				attribution: "&copy; OpenStreetMap contributors",
+				maxZoom: 19
+			}).addTo(map);
+			L.marker([23.7914513, 90.430083]).addTo(map).bindPopup("<strong>Khilbarirtek Boroitola Bazar</strong><br>Rohim Road, Vatara, Dhaka").openPopup();
+		});
+		onBeforeUnmount(() => map?.remove());
 		return (_ctx, _push, _parent, _attrs) => {
 			_push(`<section${ssrRenderAttrs(mergeProps({
 				id: "contact",
 				class: "section-padding bg-background relative overflow-hidden"
-			}, _attrs))}><div class="absolute inset-0 opacity-5"><div class="absolute top-20 left-10 w-32 h-32 bg-accent rounded-full blur-3xl"></div><div class="absolute bottom-20 right-10 w-40 h-40 bg-highlight rounded-full blur-3xl"></div></div><div class="max-w-7xl mx-auto relative z-10"><div class="mb-16 sm:mb-20 text-center" data-aos="fade-down"><h2 class="section-header"><span class="section-number">06.</span> Get In Touch </h2><p class="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto"> I&#39;m always interested in new opportunities and interesting projects. Whether you have a question or just want to say hello, feel free to reach out! </p></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-16"><div class="space-y-6 sm:space-y-8"><div data-aos="fade-right"><h3 class="text-xl sm:text-2xl font-bold text-accent mb-4 sm:mb-6">Let&#39;s Connect</h3><p class="text-muted-foreground leading-relaxed mb-6 sm:mb-8"> I&#39;m currently open to new opportunities and always excited to work on innovative projects. If you&#39;re looking for a dedicated developer or just want to connect, I&#39;d love to hear from you. </p></div><div class="space-y-4"><!--[-->`);
-			ssrRenderList(__props.contactInfo, (contact, index) => {
+			}, _attrs))}><div class="absolute inset-0 opacity-5"><div class="absolute top-20 left-10 w-32 h-32 bg-accent rounded-full blur-3xl"></div><div class="absolute bottom-20 right-10 w-40 h-40 bg-highlight rounded-full blur-3xl"></div></div><div class="max-w-7xl mx-auto relative z-10"><div class="mb-16 sm:mb-20 text-center" data-aos="fade-down"><h2 class="section-header"><span class="section-number">07.</span> Get In Touch </h2><p class="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto"> I&#39;m always interested in new opportunities and interesting projects. Whether you have a question or just want to say hello, feel free to reach out! </p></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-16"><div class="space-y-6 sm:space-y-8"><div data-aos="fade-right"><h3 class="text-xl sm:text-2xl font-bold text-accent mb-4 sm:mb-6">Let&#39;s Work Together</h3><p class="text-muted-foreground leading-relaxed mb-6 sm:mb-8"> Have a question, project idea, or business opportunity? Share the details and I&#39;ll get back to you as soon as possible. </p></div><div class="space-y-4"><!--[-->`);
+			ssrRenderList(contactItems.value, (contact, index) => {
 				ssrRenderVNode(_push, createVNode(resolveDynamicComponent(contact.href ? "a" : "div"), {
 					key: contact.id,
 					href: contact.href || void 0,
@@ -3441,7 +3558,12 @@ var _sfc_main$12 = {
 					_: 2
 				}), _parent);
 			});
-			_push(`<!--]--></div><div data-aos="fade-right" data-aos-delay="300"><h4 class="font-semibold text-foreground mb-4">Find me on</h4><div class="flex flex-wrap gap-3"><!--[-->`);
+			_push(`<!--]--></div><div class="border border-accent/30 bg-accent/5 rounded-lg p-5" data-aos="fade-right" data-aos-delay="250"><div class="flex items-start gap-3">`);
+			_push(ssrRenderComponent(unref(FontAwesomeIcon), {
+				icon: unref(faCheck),
+				class: "mt-1 text-accent"
+			}, null, _parent));
+			_push(`<div><p class="font-semibold text-foreground">Available for freelance and remote opportunities.</p><p class="text-sm text-muted-foreground mt-1">Based in Khilbarirtek Boroitola Bazar, Vatara, Dhaka.</p></div></div></div><div data-aos="fade-right" data-aos-delay="300"><h4 class="font-semibold text-foreground mb-4">Find me on</h4><div class="flex flex-wrap gap-3"><!--[-->`);
 			ssrRenderList(__props.socialLinks, (social) => {
 				_push(`<a${ssrRenderAttr("href", social.href)} target="_blank" rel="noopener noreferrer" class="${ssrRenderClass([[unref(resolveSocialMeta)(social.platform_name).color, unref(resolveSocialMeta)(social.platform_name).bgHover], "w-12 h-12 bg-card border border-border rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-card"])}"${ssrRenderAttr("aria-label", social.platform_name)}${ssrRenderAttr("title", social.platform_name)}>`);
 				_push(ssrRenderComponent(unref(FontAwesomeIcon), {
@@ -3450,24 +3572,53 @@ var _sfc_main$12 = {
 				}, null, _parent));
 				_push(`</a>`);
 			});
-			_push(`<!--]--></div></div></div><div class="bg-card border border-border rounded-lg p-6 sm:p-8 lg:p-12 xl:p-16 shadow-card hover:shadow-elegant transition-all duration-300" data-aos="fade-left"><h3 class="text-2xl font-bold text-accent mb-6">Send a Message</h3><form class="space-y-6"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label for="name" class="block text-sm font-medium text-foreground mb-2">Name *</label><input id="name"${ssrRenderAttr("value", unref(form).name)} type="text" class="${ssrRenderClass([unref(form).errors.name ? "border-destructive" : "border-border", "w-full px-4 py-3 bg-input border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground"])}" placeholder="Your name">`);
-			if (unref(form).errors.name) _push(`<p class="mt-1.5 text-sm text-destructive">${ssrInterpolate(unref(form).errors.name)}</p>`);
+			_push(`<!--]--></div></div></div><div class="bg-card border border-border rounded-lg p-6 sm:p-8 lg:p-10 shadow-card hover:shadow-elegant transition-all duration-300" data-aos="fade-left"><h3 class="text-2xl font-bold text-accent mb-2">Have a Project in Mind?</h3><p class="text-sm text-muted-foreground mb-6">Tell me what you are building, and let&#39;s explore how I can help.</p><form class="space-y-6"><input${ssrRenderAttr("value", unref(form).website)} type="text" name="website" tabindex="-1" autocomplete="off" class="absolute -left-[9999px] h-px w-px opacity-0" aria-hidden="true"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label for="name" class="block text-sm font-medium text-foreground mb-2">Name *</label><input id="name"${ssrRenderAttr("value", unref(form).name)} type="text" class="${ssrRenderClass([fieldError("name") ? "border-destructive" : "border-border", "w-full px-4 py-3 bg-input border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground"])}" placeholder="Your name" autocomplete="name"${ssrRenderAttr("aria-invalid", Boolean(fieldError("name")))} aria-describedby="name-error">`);
+			if (fieldError("name")) _push(`<p id="name-error" class="mt-1.5 text-sm text-destructive">${ssrInterpolate(fieldError("name"))}</p>`);
 			else _push(`<!---->`);
-			_push(`</div><div><label for="email" class="block text-sm font-medium text-foreground mb-2">Email *</label><input id="email"${ssrRenderAttr("value", unref(form).email)} type="email" class="${ssrRenderClass([unref(form).errors.email ? "border-destructive" : "border-border", "w-full px-4 py-3 bg-input border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground"])}" placeholder="your.email@example.com">`);
-			if (unref(form).errors.email) _push(`<p class="mt-1.5 text-sm text-destructive">${ssrInterpolate(unref(form).errors.email)}</p>`);
+			_push(`</div><div><label for="email" class="block text-sm font-medium text-foreground mb-2">Email *</label><input id="email"${ssrRenderAttr("value", unref(form).email)} type="email" class="${ssrRenderClass([fieldError("email") ? "border-destructive" : "border-border", "w-full px-4 py-3 bg-input border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground"])}" placeholder="your.email@example.com" autocomplete="email"${ssrRenderAttr("aria-invalid", Boolean(fieldError("email")))} aria-describedby="email-error">`);
+			if (fieldError("email")) _push(`<p id="email-error" class="mt-1.5 text-sm text-destructive">${ssrInterpolate(fieldError("email"))}</p>`);
 			else _push(`<!---->`);
-			_push(`</div></div><div><label for="subject" class="block text-sm font-medium text-foreground mb-2">Subject *</label><input id="subject"${ssrRenderAttr("value", unref(form).subject)} type="text" class="${ssrRenderClass([unref(form).errors.subject ? "border-destructive" : "border-border", "w-full px-4 py-3 bg-input border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground"])}" placeholder="What&#39;s this about?">`);
-			if (unref(form).errors.subject) _push(`<p class="mt-1.5 text-sm text-destructive">${ssrInterpolate(unref(form).errors.subject)}</p>`);
+			_push(`</div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label for="company" class="block text-sm font-medium text-foreground mb-2">Company / Organization <span class="text-muted-foreground">(optional)</span></label><input id="company"${ssrRenderAttr("value", unref(form).company)} type="text" class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground" placeholder="Your company" autocomplete="organization"></div><div><label for="inquiry_type" class="block text-sm font-medium text-foreground mb-2">Project Type</label><select id="inquiry_type" class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground"><option value=""${ssrIncludeBooleanAttr(Array.isArray(unref(form).inquiry_type) ? ssrLooseContain(unref(form).inquiry_type, "") : ssrLooseEqual(unref(form).inquiry_type, "")) ? " selected" : ""}>Select an option</option><!--[-->`);
+			ssrRenderList(inquiryTypes, (type) => {
+				_push(`<option${ssrRenderAttr("value", type)}${ssrIncludeBooleanAttr(Array.isArray(unref(form).inquiry_type) ? ssrLooseContain(unref(form).inquiry_type, type) : ssrLooseEqual(unref(form).inquiry_type, type)) ? " selected" : ""}>${ssrInterpolate(type)}</option>`);
+			});
+			_push(`<!--]--></select></div></div><div><label for="budget_range" class="block text-sm font-medium text-foreground mb-2">Budget Range <span class="text-muted-foreground">(optional)</span></label><select id="budget_range" class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground"><option value=""${ssrIncludeBooleanAttr(Array.isArray(unref(form).budget_range) ? ssrLooseContain(unref(form).budget_range, "") : ssrLooseEqual(unref(form).budget_range, "")) ? " selected" : ""}>Select a budget range</option><!--[-->`);
+			ssrRenderList(budgetRanges, (budget) => {
+				_push(`<option${ssrRenderAttr("value", budget)}${ssrIncludeBooleanAttr(Array.isArray(unref(form).budget_range) ? ssrLooseContain(unref(form).budget_range, budget) : ssrLooseEqual(unref(form).budget_range, budget)) ? " selected" : ""}>${ssrInterpolate(budget)}</option>`);
+			});
+			_push(`<!--]--></select></div><div><label for="subject" class="block text-sm font-medium text-foreground mb-2">Subject *</label><input id="subject"${ssrRenderAttr("value", unref(form).subject)} type="text" class="${ssrRenderClass([fieldError("subject") ? "border-destructive" : "border-border", "w-full px-4 py-3 bg-input border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground"])}" placeholder="What&#39;s this about?"${ssrRenderAttr("aria-invalid", Boolean(fieldError("subject")))} aria-describedby="subject-error">`);
+			if (fieldError("subject")) _push(`<p id="subject-error" class="mt-1.5 text-sm text-destructive">${ssrInterpolate(fieldError("subject"))}</p>`);
 			else _push(`<!---->`);
-			_push(`</div><div><label for="message" class="block text-sm font-medium text-foreground mb-2">Message *</label><textarea id="message" rows="5" class="${ssrRenderClass([unref(form).errors.message ? "border-destructive" : "border-border", "w-full px-4 py-3 bg-input border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground resize-none"])}" placeholder="Tell me about your project or just say hello...">${ssrInterpolate(unref(form).message)}</textarea>`);
-			if (unref(form).errors.message) _push(`<p class="mt-1.5 text-sm text-destructive">${ssrInterpolate(unref(form).errors.message)}</p>`);
+			_push(`</div><div><label for="message" class="block text-sm font-medium text-foreground mb-2">Message *</label><textarea id="message" rows="5" class="${ssrRenderClass([fieldError("message") ? "border-destructive" : "border-border", "w-full px-4 py-3 bg-input border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors text-foreground resize-none"])}" placeholder="Tell me about your project or just say hello..."${ssrRenderAttr("aria-invalid", Boolean(fieldError("message")))} aria-describedby="message-error">${ssrInterpolate(unref(form).message)}</textarea>`);
+			if (fieldError("message")) _push(`<p id="message-error" class="mt-1.5 text-sm text-destructive">${ssrInterpolate(fieldError("message"))}</p>`);
 			else _push(`<!---->`);
-			_push(`</div><button type="submit"${ssrIncludeBooleanAttr(unref(form).processing) ? " disabled" : ""} class="w-full flex items-center justify-center space-x-2 py-4 bg-accent text-accent-foreground font-semibold rounded-lg hover:shadow-lg hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0">`);
+			_push(`</div>`);
+			if (toast.value.show && toast.value.title === "Message Sent!") {
+				_push(`<p class="flex items-start gap-2 rounded-lg border border-accent/30 bg-accent/10 p-4 text-sm text-foreground" role="status">`);
+				_push(ssrRenderComponent(unref(FontAwesomeIcon), {
+					icon: unref(faCheck),
+					class: "mt-0.5 text-accent"
+				}, null, _parent));
+				_push(`<span>${ssrInterpolate(toast.value.description)}</span></p>`);
+			} else _push(`<!---->`);
+			if (toast.value.show && toast.value.title === "Unable to send message") _push(`<p class="rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive" role="alert">${ssrInterpolate(toast.value.description)}</p>`);
+			else _push(`<!---->`);
+			_push(`<button type="submit"${ssrIncludeBooleanAttr(unref(form).processing) ? " disabled" : ""} class="w-full flex items-center justify-center space-x-2 py-4 bg-accent text-accent-foreground font-semibold rounded-lg hover:shadow-lg hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0">`);
 			_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 				icon: unref(faPaperPlane),
 				class: "w-5 h-5"
 			}, null, _parent));
-			_push(`<span>${ssrInterpolate(unref(form).processing ? "Sending..." : "Send Message")}</span></button></form></div></div><div class="mt-8 pt-5 pb-1 border-t border-border text-center" data-aos="fade-up"><p class="text-muted-foreground">${ssrInterpolate(__props.ownerName)}</p><p class="text-sm text-muted-foreground mt-1">© ${ssrInterpolate((/* @__PURE__ */ new Date()).getFullYear())} ${ssrInterpolate(__props.ownerName)}. All rights reserved.</p></div></div>`);
+			_push(`<span>${ssrInterpolate(unref(form).processing ? "Sending..." : "Send Message")}</span></button></form></div></div><div class="mt-12 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-end" data-aos="fade-up"><div><div class="flex items-center gap-3 mb-4">`);
+			_push(ssrRenderComponent(unref(FontAwesomeIcon), {
+				icon: unref(faLocationDot),
+				class: "text-accent"
+			}, null, _parent));
+			_push(`<h3 class="text-xl font-bold text-foreground">Find Me Here</h3></div><div class="h-72 sm:h-80 w-full rounded-lg border border-border overflow-hidden shadow-card" aria-label="Map showing Khilbarirtek Boroitola Bazar"></div></div><a href="https://www.google.com/maps/dir/?api=1&amp;destination=23.7914513,90.430083" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 btn-outline-cyan whitespace-nowrap"><span>Get Directions</span>`);
+			_push(ssrRenderComponent(unref(FontAwesomeIcon), {
+				icon: unref(faArrowUpRightFromSquare),
+				class: "w-4 h-4"
+			}, null, _parent));
+			_push(`</a></div><div class="mt-8 pt-5 pb-1 border-t border-border text-center" data-aos="fade-up"><p class="text-muted-foreground">${ssrInterpolate(footerOwnerName.value)}</p><p class="max-w-xl mx-auto text-sm text-muted-foreground mt-2">${ssrInterpolate(footerDescription.value)}</p><p class="text-sm text-muted-foreground mt-2">${ssrInterpolate(copyrightText.value)}</p></div></div>`);
 			_push(ssrRenderComponent(Toast_default, {
 				show: toast.value.show,
 				title: toast.value.title,
@@ -3579,8 +3730,10 @@ var _sfc_main$10 = {
 	},
 	setup(__props) {
 		const props = __props;
-		const seoTitle = computed(() => props.profile?.name ? `${props.profile.name} | Laravel & Vue.js Full Stack Developer` : "Portfolio");
-		const seoDescription = computed(() => props.profile?.tagline || props.profile?.bio?.slice(0, 155) || "");
+		const page = usePage();
+		const siteSettings = computed(() => page.props.siteSettings || {});
+		const seoTitle = computed(() => siteSettings.value.site_name || (props.profile?.name ? `${props.profile.name} | Portfolio` : "Portfolio"));
+		const seoDescription = computed(() => siteSettings.value.site_description || props.profile?.tagline || props.profile?.bio?.slice(0, 155) || "");
 		return (_ctx, _push, _parent, _attrs) => {
 			_push(`<!--[-->`);
 			_push(ssrRenderComponent(_sfc_main$34, {
@@ -3597,10 +3750,7 @@ var _sfc_main$10 = {
 				}
 			}, null, _parent));
 			_push(`<div class="min-h-screen bg-background overflow-x-hidden">`);
-			_push(ssrRenderComponent(_sfc_main$33, {
-				"resume-url": __props.profile?.resume_file,
-				"logo-url": __props.profile?.profile_photo
-			}, null, _parent));
+			_push(ssrRenderComponent(_sfc_main$33, { "resume-url": __props.profile?.resume_file }, null, _parent));
 			_push(ssrRenderComponent(_sfc_main$23, {
 				name: __props.profile?.name,
 				bio: __props.profile?.bio,
@@ -4208,7 +4358,13 @@ var _sfc_main$2 = {
 			if (__props.projects.length) {
 				_push(`<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"><!--[-->`);
 				ssrRenderList(__props.projects, (project) => {
-					_push(`<div role="link" tabindex="0" class="group bg-card border border-border rounded-xl overflow-hidden card-hover hover:border-accent/50 transition-all duration-300 block cursor-pointer" data-aos="fade-up"><div class="relative h-48 overflow-hidden bg-accent/10"><img${ssrRenderAttr("src", project.images?.[0]?.image_path)}${ssrRenderAttr("alt", `Screenshot of ${project.title}`)} loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">`);
+					_push(`<div class="group relative bg-card border border-border rounded-xl overflow-hidden card-hover hover:border-accent/50 transition-all duration-300 block" data-aos="fade-up">`);
+					_push(ssrRenderComponent(unref(Link), {
+						href: `/project/${project.slug}`,
+						class: "absolute inset-0 z-0 rounded-xl",
+						"aria-label": `View ${project.title} project`
+					}, null, _parent));
+					_push(`<div class="relative z-10 pointer-events-none"><div class="relative h-48 overflow-hidden bg-accent/10"><img${ssrRenderAttr("src", project.images?.[0]?.image_path)}${ssrRenderAttr("alt", `Screenshot of ${project.title}`)} loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">`);
 					_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 						icon: unref(faEye),
 						class: "w-8 h-8 text-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-0 group-hover:scale-100"
@@ -4225,7 +4381,7 @@ var _sfc_main$2 = {
 					else _push(`<!---->`);
 					_push(`</div><div class="flex items-center gap-3">`);
 					if (project.github_url) {
-						_push(`<a${ssrRenderAttr("href", project.github_url)} target="_blank" rel="noopener noreferrer" class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform" aria-label="View GitHub repository">`);
+						_push(`<a${ssrRenderAttr("href", project.github_url)} target="_blank" rel="noopener noreferrer" class="relative z-20 pointer-events-auto text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform" aria-label="View GitHub repository">`);
 						_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 							icon: unref(faGithub),
 							class: "w-5 h-5"
@@ -4233,14 +4389,14 @@ var _sfc_main$2 = {
 						_push(`</a>`);
 					} else _push(`<!---->`);
 					if (project.live_url) {
-						_push(`<a${ssrRenderAttr("href", project.live_url)} target="_blank" rel="noopener noreferrer" class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform" aria-label="View live project">`);
+						_push(`<a${ssrRenderAttr("href", project.live_url)} target="_blank" rel="noopener noreferrer" class="relative z-20 pointer-events-auto text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform" aria-label="View live project">`);
 						_push(ssrRenderComponent(unref(FontAwesomeIcon), {
 							icon: unref(faArrowUpRightFromSquare),
 							class: "w-5 h-5"
 						}, null, _parent));
 						_push(`</a>`);
 					} else _push(`<!---->`);
-					_push(`</div></div></div>`);
+					_push(`</div></div></div></div>`);
 				});
 				_push(`<!--]--></div>`);
 			} else {
@@ -4311,19 +4467,19 @@ var _sfc_main$1 = {
 							"@type": "ListItem",
 							position: 1,
 							name: "Home",
-							item: "/"
+							item: `${unref(page).props.siteUrl}/`
 						},
 						{
 							"@type": "ListItem",
 							position: 2,
 							name: "Projects",
-							item: "/projects"
+							item: `${unref(page).props.siteUrl}/projects`
 						},
 						{
 							"@type": "ListItem",
 							position: 3,
 							name: __props.project.title,
-							item: `/project/${__props.project.slug}`
+							item: `${unref(page).props.siteUrl}/project/${__props.project.slug}`
 						}
 					]
 				}]

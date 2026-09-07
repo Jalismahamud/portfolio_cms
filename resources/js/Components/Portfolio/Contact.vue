@@ -23,6 +23,7 @@ const form = useForm({
     budget_range: '',
     subject: '',
     message: '',
+    website: '',
 });
 const toast = ref({ show: false, title: '', description: '' });
 const clientErrors = ref({});
@@ -219,6 +220,7 @@ onBeforeUnmount(() => map?.remove());
                     <p class="text-sm text-muted-foreground mb-6">Tell me what you are building, and let's explore how I can help.</p>
 
                     <form @submit.prevent="handleSubmit" class="space-y-6">
+                        <input v-model="form.website" type="text" name="website" tabindex="-1" autocomplete="off" class="absolute -left-[9999px] h-px w-px opacity-0" aria-hidden="true" />
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label for="name" class="block text-sm font-medium text-foreground mb-2">Name *</label>
