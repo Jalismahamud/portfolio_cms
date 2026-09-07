@@ -66,6 +66,8 @@ A personal portfolio site, rebuilt from a static React SPA into a dynamic, CMS-d
    php artisan inertia:start-ssr
    ```
 
+   In production, run `npm run build:ssr` during deployment and keep the SSR process running under Supervisor, systemd, or another process manager. Verify it after deployment with `php artisan inertia:check-ssr`. Without the SSR process, crawlers receive the client shell instead of page-specific headings, titles, descriptions, canonical URLs, and social metadata.
+
 9. **Serve the app**
 
    ```sh

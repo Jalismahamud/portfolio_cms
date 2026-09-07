@@ -33,7 +33,9 @@ const props = defineProps({
 const page = usePage();
 const siteSettings = computed(() => page.props.siteSettings || {});
 const seoTitle = computed(() =>
-    siteSettings.value.site_name || (props.profile?.name ? `${props.profile.name} | Portfolio` : 'Portfolio'),
+    siteSettings.value.site_name
+        ? `${siteSettings.value.site_name} | Laravel & Vue.js Full Stack Developer`
+        : (props.profile?.name ? `${props.profile.name} | Laravel & Vue.js Full Stack Developer` : 'Portfolio'),
 );
 const seoDescription = computed(() => siteSettings.value.site_description || props.profile?.tagline || props.profile?.bio?.slice(0, 155) || '');
 </script>
