@@ -11,7 +11,6 @@
         "@inertiajs/vue3": "^2.0.0",
         "@tailwindcss/forms": "^0.5.3",
         "@tailwindcss/typography": "^0.5.20",
-        "@tailwindcss/vite": "^4.0.0",
         "@vitejs/plugin-vue": "^6.0.0",
         "@vue/server-renderer": "^3.5.42",
         "autoprefixer": "^10.4.12",
@@ -31,7 +30,8 @@
         "@fortawesome/free-solid-svg-icons": "^7.3.1",
         "@fortawesome/vue-fontawesome": "^3.3.3",
         "aos": "^2.3.4",
-        "axios": "^1.20.0",
+        "dompurify": "^3.4.15",
+        "leaflet": "^1.9.4",
         "marked": "^18.0.11"
     }
 }
