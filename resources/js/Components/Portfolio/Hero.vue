@@ -26,6 +26,7 @@ const currentTime = ref(new Date());
 const serviceText = ref('');
 const serviceIndex = ref(0);
 const isTyping = ref(true);
+const prefersReducedMotion = ref(false);
 
 const stars = Array.from({ length: 20 }, () => ({
     left: `${Math.random() * 100}%`,
@@ -77,11 +78,17 @@ function tickTyping() {
 }
 
 onMounted(() => {
+    prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     clockTimer = setInterval(() => {
         currentTime.value = new Date();
     }, 1000);
 
-    tickTyping();
+    if (prefersReducedMotion.value) {
+        serviceText.value = serviceList[0];
+        isTyping.value = false;
+    } else {
+        tickTyping();
+    }
 });
 
 onUnmounted(() => {

@@ -33,7 +33,7 @@ function splitLabel(label) {
     return { num: `${num}.`, text: rest.join('. ') };
 }
 
-let handleScroll = null;
+let sectionObserver = null;
 
 onMounted(() => {
     if (page.url.startsWith('/blog')) {
@@ -46,35 +46,20 @@ onMounted(() => {
     }
     if (!isHome.value) return;
 
-    handleScroll = () => {
-        const scrollPosition = window.scrollY + window.innerHeight / 3;
-        let current = 'about';
+    sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) activeSection.value = entry.target.id;
+        });
+    }, { rootMargin: '-20% 0px -50% 0px', threshold: 0 });
 
-        for (const item of navItems) {
-            const el = document.getElementById(item.id);
-            if (el) {
-                const rect = el.getBoundingClientRect();
-                const top = window.scrollY + rect.top;
-                const bottom = top + rect.height;
-
-                if (scrollPosition >= top && scrollPosition < bottom) {
-                    current = item.id;
-                    break;
-                }
-            }
-        }
-
-        if (activeSection.value !== current) {
-            activeSection.value = current;
-        }
-    };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll);
+    navItems.forEach((item) => {
+        const section = document.getElementById(item.id);
+        if (section) sectionObserver.observe(section);
+    });
 });
 
 onUnmounted(() => {
-    if (handleScroll) window.removeEventListener('scroll', handleScroll);
+    sectionObserver?.disconnect();
 });
 
 function scrollToSection(href) {
@@ -113,7 +98,7 @@ function scrollToTop() {
 </script>
 
 <template>
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b border-border">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b border-border" @keydown.esc="isMobileMenuOpen = false">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <!-- Logo -->
@@ -151,6 +136,7 @@ function scrollToTop() {
                         @click="isMobileMenuOpen = !isMobileMenuOpen"
                         :aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
                         :aria-expanded="isMobileMenuOpen"
+                        aria-controls="mobile-navigation"
                         class="lg:hidden p-2 rounded-lg bg-card border border-border hover:bg-accent/10 transition-colors"
                     >
                         <FontAwesomeIcon v-if="isMobileMenuOpen" :icon="faXmark" class="w-5 h-5 text-accent" />
@@ -186,7 +172,7 @@ function scrollToTop() {
             </div>
 
             <!-- Mobile Navigation Menu -->
-            <div v-if="isMobileMenuOpen" class="lg:hidden border-t border-border mt-4 pt-4 pb-6 animate-fade-in">
+            <div v-if="isMobileMenuOpen" id="mobile-navigation" class="lg:hidden border-t border-border mt-4 pt-4 pb-6 animate-fade-in" role="navigation" aria-label="Mobile navigation">
                 <div class="space-y-3">
                     <button
                         v-for="item in navItems"

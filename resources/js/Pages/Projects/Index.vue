@@ -29,9 +29,6 @@ watch(searchQuery, (value) => {
     }, 300);
 });
 
-function goToProject(slug) {
-    router.visit(`/project/${slug}`);
-}
 </script>
 
 <template>
@@ -84,13 +81,11 @@ function goToProject(slug) {
                     <div
                         v-for="project in projects"
                         :key="project.id"
-                        role="link"
-                        tabindex="0"
-                        @click="goToProject(project.slug)"
-                        @keydown.enter.space.prevent="goToProject(project.slug)"
-                        class="group bg-card border border-border rounded-xl overflow-hidden card-hover hover:border-accent/50 transition-all duration-300 block cursor-pointer"
+                        class="group relative bg-card border border-border rounded-xl overflow-hidden card-hover hover:border-accent/50 transition-all duration-300 block"
                         data-aos="fade-up"
                     >
+                        <Link :href="`/project/${project.slug}`" class="absolute inset-0 z-0 rounded-xl" :aria-label="`View ${project.title} project`" />
+                        <div class="relative z-10 pointer-events-none">
                         <div class="relative h-48 overflow-hidden bg-accent/10">
                             <img
                                 :src="project.images?.[0]?.image_path"
@@ -135,7 +130,7 @@ function goToProject(slug) {
                                     @click.stop
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
+                                    class="relative z-20 pointer-events-auto text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
                                     aria-label="View GitHub repository"
                                 >
                                     <FontAwesomeIcon :icon="faGithub" class="w-5 h-5" />
@@ -146,12 +141,13 @@ function goToProject(slug) {
                                     @click.stop
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
+                                    class="relative z-20 pointer-events-auto text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
                                     aria-label="View live project"
                                 >
                                     <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="w-5 h-5" />
                                 </a>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>

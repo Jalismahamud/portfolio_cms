@@ -33,6 +33,20 @@ class SiteSettingForm
                             ->image()
                             ->disk('public')
                             ->directory('branding'),
+                        Textarea::make('site_description')
+                            ->label('Site description')
+                            ->helperText('Used as the default search engine and social preview description.')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                        Textarea::make('footer_description')
+                            ->label('Footer description')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                        TextInput::make('copyright_text')
+                            ->label('Copyright text')
+                            ->helperText('Use {year} to insert the current year automatically.')
+                            ->maxLength(255)
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
                 Section::make('Admin login')

@@ -12,19 +12,21 @@ class ProjectController extends Controller
     public function index(Request $request): Response
     {
         $search = $request->string('search')->trim()->toString();
+        $searchTerm = mb_strlen($search) >= 2 ? $search : '';
 
         $projects = Project::query()
             ->with(['images', 'technologies'])
-            ->when($search !== '', function ($query) use ($search) {
-                $query->where(function ($query) use ($search) {
-                    $query->where('title', 'like', "%{$search}%")
-                        ->orWhere('description', 'like', "%{$search}%")
-                        ->orWhereHas('technologies', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
+            ->when($searchTerm !== '', function ($query) use ($searchTerm) {
+                $query->where(function ($query) use ($searchTerm) {
+                    $query->where('title', 'like', "%{$searchTerm}%")
+                        ->orWhere('description', 'like', "%{$searchTerm}%")
+                        ->orWhereHas('technologies', function ($query) use ($searchTerm) {
+                            $query->where('name', 'like', "%{$searchTerm}%");
                         });
                 });
             })
             ->orderBy('sort_order')
+            ->limit(24)
             ->get();
 
         return Inertia::render('Projects/Index', [

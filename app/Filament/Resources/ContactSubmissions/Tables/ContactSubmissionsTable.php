@@ -31,6 +31,9 @@ class ContactSubmissionsTable
                     ->label('Email address')
                     ->searchable()
                     ->copyable(),
+                TextColumn::make('inquiry_type')
+                    ->label('Project type')
+                    ->toggleable(),
                 TextColumn::make('subject')
                     ->searchable()
                     ->limit(40),

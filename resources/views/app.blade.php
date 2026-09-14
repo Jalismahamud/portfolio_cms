@@ -1,10 +1,26 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     @php($siteSettings = \App\Models\SiteSetting::current())
+    @php($siteUrl = config('seo.site_url'))
+    @php($canonicalUrl = $siteUrl.request()->getPathInfo())
+    @php($fallbackTitle = ($siteSettings?->site_name ?: config('app.name', 'Laravel')).' | Portfolio')
+    @php($fallbackDescription = $siteSettings?->site_description ?: 'Professional portfolio website')
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#1a1a2e">
+        <meta name="description" content="{{ $fallbackDescription }}">
+        <link rel="canonical" href="{{ $canonicalUrl }}">
+        <meta property="og:title" content="{{ $fallbackTitle }}">
+        <meta property="og:description" content="{{ $fallbackDescription }}">
+        <meta property="og:url" content="{{ $canonicalUrl }}">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="{{ $siteSettings?->site_name ?: config('app.name', 'Laravel') }}">
+        <meta property="og:image" content="{{ $siteSettings?->assetUrl($siteSettings->logo, '/og-image.webp') }}">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ $fallbackTitle }}">
+        <meta name="twitter:description" content="{{ $fallbackDescription }}">
+        <meta name="twitter:image" content="{{ $siteSettings?->assetUrl($siteSettings->logo, '/og-image.webp') }}">
 
         @if (config('seo.google_site_verification'))
             <meta name="google-site-verification" content="{{ config('seo.google_site_verification') }}">
@@ -23,7 +39,7 @@
             })();
         </script>
 
-        <title inertia>{{ $siteSettings?->site_name ?: config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ $fallbackTitle }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,7 +52,7 @@
 
         <!-- Structured Data: Person & WebSite (shared on every page) -->
         @foreach ($siteJsonLd ?? [] as $entry)
-            <script type="application/ld+json">{!! json_encode($entry) !!}</script>
+            <script type="application/ld+json">{!! json_encode($entry, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
         @endforeach
 
         <!-- Scripts -->

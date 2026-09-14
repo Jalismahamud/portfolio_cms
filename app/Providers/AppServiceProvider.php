@@ -3,7 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Profile;
+use App\Models\SiteSetting;
 use App\Models\SocialLink;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -25,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
 
+        RateLimiter::for('contact', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip().'|'.$request->string('email')->lower());
+        });
+
         View::composer('app', function ($view) {
             $view->with('siteJsonLd', $this->siteJsonLd());
         });
@@ -39,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $siteUrl = config('seo.site_url');
         $profile = Profile::query()->first();
+        $siteSettings = SiteSetting::current();
 
         $person = [
             '@context' => 'https://schema.org',
@@ -55,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
         $website = [
             '@context' => 'https://schema.org',
             '@type' => 'WebSite',
-            'name' => $profile?->name ? "{$profile->name} | Portfolio" : 'Portfolio',
+            'name' => $siteSettings?->site_name ?: ($profile?->name ? "{$profile->name} | Portfolio" : 'Portfolio'),
             'url' => $siteUrl,
         ];
 

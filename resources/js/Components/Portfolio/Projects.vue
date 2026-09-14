@@ -1,17 +1,14 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faArrowUpRightFromSquare, faEye } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
-const props = defineProps({
+defineProps({
     featuredProjects: { type: Array, default: () => [] },
     otherProjects: { type: Array, default: () => [] },
 });
 
-function goToProject(slug) {
-    router.visit(`/project/${slug}`);
-}
 </script>
 
 <template>
@@ -122,14 +119,12 @@ function goToProject(slug) {
                     <div
                         v-for="(project, index) in otherProjects"
                         :key="project.id"
-                        role="link"
-                        tabindex="0"
-                        @click="goToProject(project.slug)"
-                        @keydown.enter.space.prevent="goToProject(project.slug)"
-                        class="bg-card border border-border rounded-lg p-4 sm:p-6 card-hover group hover:scale-105 transition-all duration-300 block cursor-pointer hover:border-accent/50"
+                        class="relative bg-card border border-border rounded-lg p-4 sm:p-6 card-hover group hover:scale-105 transition-all duration-300 block hover:border-accent/50"
                         data-aos="fade-up"
                         :data-aos-delay="index * 100"
                     >
+                        <Link :href="`/project/${project.slug}`" class="absolute inset-0 z-0 rounded-lg" :aria-label="`View ${project.title} project`" />
+                        <div class="relative z-10 pointer-events-none">
                         <div class="flex items-center justify-between mb-4">
                             <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent/20 transition-colors">
                                 <FontAwesomeIcon :icon="faEye" class="w-6 h-6 text-accent group-hover:scale-110 transition-transform" />
@@ -141,7 +136,8 @@ function goToProject(slug) {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     @click.stop
-                                    class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
+                                    class="relative z-20 pointer-events-auto text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
+                                    aria-label="View GitHub repository"
                                 >
                                     <FontAwesomeIcon :icon="faGithub" class="w-5 h-5" />
                                 </a>
@@ -151,7 +147,8 @@ function goToProject(slug) {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     @click.stop
-                                    class="text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
+                                    class="relative z-20 pointer-events-auto text-muted-foreground hover:text-accent transition-colors hover:scale-110 transform"
+                                    aria-label="View live project"
                                 >
                                     <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="w-5 h-5" />
                                 </a>
@@ -177,6 +174,7 @@ function goToProject(slug) {
                             <span v-if="project.technologies.length > 3" class="text-xs font-mono text-muted-foreground">
                                 +{{ project.technologies.length - 3 }}
                             </span>
+                        </div>
                         </div>
                     </div>
                 </div>

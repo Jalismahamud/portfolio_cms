@@ -12,6 +12,9 @@ return new class extends Migration
             $table->string('site_name')->nullable()->after('value');
             $table->string('logo')->nullable()->after('site_name');
             $table->string('favicon')->nullable()->after('logo');
+            $table->text('site_description')->nullable()->after('favicon');
+            $table->text('footer_description')->nullable()->after('site_description');
+            $table->string('copyright_text')->nullable()->after('footer_description');
             $table->string('login_logo')->nullable()->after('favicon');
             $table->string('login_heading')->nullable()->after('login_logo');
             $table->text('login_description')->nullable()->after('login_heading');

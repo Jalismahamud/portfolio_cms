@@ -46,9 +46,9 @@ function prevImage() {
                 '@context': 'https://schema.org',
                 '@type': 'BreadcrumbList',
                 itemListElement: [
-                    { '@type': 'ListItem', position: 1, name: 'Home', item: '/' },
-                    { '@type': 'ListItem', position: 2, name: 'Projects', item: '/projects' },
-                    { '@type': 'ListItem', position: 3, name: project.title, item: `/project/${project.slug}` },
+                    { '@type': 'ListItem', position: 1, name: 'Home', item: `${page.props.siteUrl}/` },
+                    { '@type': 'ListItem', position: 2, name: 'Projects', item: `${page.props.siteUrl}/projects` },
+                    { '@type': 'ListItem', position: 3, name: project.title, item: `${page.props.siteUrl}/project/${project.slug}` },
                 ],
             },
         ]"

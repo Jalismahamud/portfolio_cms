@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['name', 'email', 'subject', 'message', 'is_read'])]
+#[Fillable(['name', 'email', 'company', 'inquiry_type', 'budget_range', 'subject', 'message', 'is_read'])]
 class ContactSubmission extends Model
 {
     use HasFactory;

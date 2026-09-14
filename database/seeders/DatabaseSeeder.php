@@ -26,6 +26,9 @@ class DatabaseSeeder extends Seeder
         SiteSetting::firstOrCreate([], [
             'key' => 'branding',
             'site_name' => 'Jalis Mahamud',
+            'site_description' => 'Laravel and Vue.js full-stack developer building reliable, scalable web applications for businesses and ambitious ideas.',
+            'footer_description' => 'Building thoughtful digital products with Laravel, Vue.js, and a focus on dependable user experiences.',
+            'copyright_text' => '© {year} Jalis Mahamud. All rights reserved.',
             'login_heading' => 'Welcome back',
             'login_description' => 'Sign in to manage your portfolio.',
         ]);

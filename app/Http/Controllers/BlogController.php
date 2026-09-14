@@ -12,19 +12,21 @@ class BlogController extends Controller
     public function index(Request $request): Response
     {
         $search = $request->string('search')->trim()->toString();
+        $searchTerm = mb_strlen($search) >= 2 ? $search : '';
         $category = $request->string('category')->trim()->toString();
 
         $posts = BlogPost::query()
             ->with('tags')
             ->where('is_published', true)
-            ->when($search !== '', function ($query) use ($search) {
-                $query->where(function ($query) use ($search) {
-                    $query->where('title', 'like', "%{$search}%")
-                        ->orWhere('excerpt', 'like', "%{$search}%");
+            ->when($searchTerm !== '', function ($query) use ($searchTerm) {
+                $query->where(function ($query) use ($searchTerm) {
+                    $query->where('title', 'like', "%{$searchTerm}%")
+                        ->orWhere('excerpt', 'like', "%{$searchTerm}%");
                 });
             })
             ->when($category !== '', fn ($query) => $query->where('category', $category))
             ->orderByDesc('published_at')
+            ->limit(24)
             ->get();
 
         $categories = BlogPost::query()
