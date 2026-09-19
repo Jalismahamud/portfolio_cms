@@ -393,6 +393,11 @@ Dark navy theme with cyan accents - All colors MUST be HSL.
         }
     }
 
+    /* Invert free OpenStreetMap tiles into a dark theme (no paid/key-gated tile provider needed) */
+    .map-tiles-dark {
+        filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9) saturate(0.9);
+    }
+
     /* Dark-themed Leaflet popup to match the dark map tiles */
     .leaflet-popup-content-wrapper,
     .leaflet-popup-tip {

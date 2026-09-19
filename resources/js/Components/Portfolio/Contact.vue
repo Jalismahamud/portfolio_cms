@@ -126,10 +126,10 @@ async function initializeMap() {
     if (!mapElement.value) return;
 
     map = L.map(mapElement.value, { scrollWheelZoom: false }).setView([23.7914513, 90.430083], 16);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 20,
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+        className: 'map-tiles-dark',
     }).addTo(map);
 
     L.marker([23.7914513, 90.430083])
@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <section id="contact" class="section-padding bg-background relative overflow-hidden">
+    <section id="contact" class="section-padding pb-8 sm:pb-8 bg-background relative overflow-hidden">
         <div class="absolute inset-0 opacity-5">
             <div class="absolute top-20 left-10 w-32 h-32 bg-accent rounded-full blur-3xl"></div>
             <div class="absolute bottom-20 right-10 w-40 h-40 bg-highlight rounded-full blur-3xl"></div>
