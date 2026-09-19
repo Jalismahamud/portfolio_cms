@@ -349,12 +349,12 @@ onBeforeUnmount(() => {
             </div>
 
             <div class="mt-12 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-end" data-aos="fade-up">
-                <div>
+                <div class="lg:max-w-[92%]">
                     <div class="flex items-center gap-3 mb-4">
                         <FontAwesomeIcon :icon="faLocationDot" class="text-accent" />
                         <h3 class="text-xl font-bold text-foreground">Find Me Here</h3>
                     </div>
-                    <div ref="mapElement" class="relative h-72 sm:h-80 w-full rounded-lg border border-border overflow-hidden shadow-card" aria-label="Map showing Khilbarirtek Boroitola Bazar">
+                    <div ref="mapElement" class="relative h-80 sm:h-96 w-full rounded-lg border border-border overflow-hidden shadow-card" aria-label="Map showing Khilbarirtek Boroitola Bazar">
                         <div v-if="!mapReady" class="absolute inset-0 flex items-center justify-center bg-card text-sm text-muted-foreground">Loading map...</div>
                     </div>
                 </div>

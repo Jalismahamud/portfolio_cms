@@ -181,6 +181,7 @@ const aiServices = [
                     <div class="relative">
                         <div class="relative aspect-square max-w-md mx-auto">
                             <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-accent/20 to-blue-500/20 rounded-full animate-pulse"></div>
+                            <div class="absolute inset-0 rounded-full border border-dashed border-accent/30 animate-orbit-spin" style="animation-duration: 30s"></div>
                             <div class="absolute inset-8 bg-gradient-to-br from-accent/10 to-transparent rounded-full border border-accent/20 flex items-center justify-center">
                                 <div class="text-center">
                                     <FontAwesomeIcon :icon="faGears" class="w-16 h-16 text-accent mx-auto mb-4 animate-float" />
@@ -188,17 +189,19 @@ const aiServices = [
                                     <p class="text-sm text-muted-foreground mt-1">Powered Solutions</p>
                                 </div>
                             </div>
-                            <div class="absolute top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-green-500/30 rounded-full flex items-center justify-center animate-float">
-                                <FontAwesomeIcon :icon="faServer" class="w-4 h-4" />
-                            </div>
-                            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-blue-500/30 rounded-full flex items-center justify-center animate-float" style="animation-delay: 0.5s">
-                                <FontAwesomeIcon :icon="faCloud" class="w-4 h-4" />
-                            </div>
-                            <div class="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-purple-500/30 rounded-full flex items-center justify-center animate-float" style="animation-delay: 1s">
-                                <FontAwesomeIcon :icon="faLayerGroup" class="w-4 h-4" />
-                            </div>
-                            <div class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-orange-500/30 rounded-full flex items-center justify-center animate-float" style="animation-delay: 1.5s">
-                                <FontAwesomeIcon :icon="faMicrochip" class="w-4 h-4" />
+                            <div class="absolute inset-0 animate-orbit-spin">
+                                <div class="absolute top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-green-500/30 rounded-full flex items-center justify-center">
+                                    <FontAwesomeIcon :icon="faServer" class="w-4 h-4 animate-orbit-counter" />
+                                </div>
+                                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-blue-500/30 rounded-full flex items-center justify-center">
+                                    <FontAwesomeIcon :icon="faCloud" class="w-4 h-4 animate-orbit-counter" />
+                                </div>
+                                <div class="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-purple-500/30 rounded-full flex items-center justify-center">
+                                    <FontAwesomeIcon :icon="faLayerGroup" class="w-4 h-4 animate-orbit-counter" />
+                                </div>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-orange-500/30 rounded-full flex items-center justify-center">
+                                    <FontAwesomeIcon :icon="faMicrochip" class="w-4 h-4 animate-orbit-counter" />
+                                </div>
                             </div>
                         </div>
                     </div>

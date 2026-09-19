@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { resolveSkillIcon } from '@/Composables/useFaIcon';
 import TechIcon from './TechIcon.vue';
+import CareerTimeline from './CareerTimeline.vue';
 
 const props = defineProps({
     name: { type: String, default: '' },
@@ -12,6 +13,9 @@ const props = defineProps({
     bio: { type: String, default: '' },
     skills: { type: Array, default: () => [] }, // [{ icon, title, description }]
     techStack: { type: Array, default: () => [] }, // [{ name, icon, category }]
+    education: { type: Array, default: () => [] },
+    certifications: { type: Array, default: () => [] },
+    experiences: { type: Array, default: () => [] },
 });
 
 const bioParagraphs = (props.bio || '').split('\n').filter((p) => p.trim().length > 0);
@@ -56,12 +60,9 @@ const focusStack = computed(() => props.techStack.slice(0, 5).map((t) => t.name)
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Right side - Terminal snapshot and Tech stack -->
-                <div class="space-y-6 sm:space-y-8">
                     <!-- Developer Snapshot (terminal card) -->
-                    <div class="bg-card border border-border rounded-xl overflow-hidden" data-aos="fade-left">
+                    <div class="bg-card border border-border rounded-xl overflow-hidden" data-aos="fade-up">
                         <div class="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted/30">
                             <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
                             <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
@@ -87,7 +88,10 @@ const focusStack = computed(() => props.techStack.slice(0, 5).map((t) => t.name)
                             <p><span class="text-accent">$</span> <span class="inline-block w-2 h-4 bg-accent align-middle animate-pulse"></span></p>
                         </div>
                     </div>
+                </div>
 
+                <!-- Right side - Tech stack -->
+                <div class="space-y-6 sm:space-y-8">
                     <!-- Tech Stack -->
                     <div class="bg-card border border-border rounded-lg p-4 sm:p-6" data-aos="fade-left">
                         <h3 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-accent">Technologies I Work With</h3>
@@ -102,6 +106,11 @@ const focusStack = computed(() => props.techStack.slice(0, 5).map((t) => t.name)
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Career Path Timeline -->
+            <div class="mt-12 sm:mt-16" data-aos="fade-up">
+                <CareerTimeline :education="education" :certifications="certifications" :experiences="experiences" />
             </div>
         </div>
     </section>

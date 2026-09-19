@@ -46,13 +46,6 @@ const seoDescription = computed(() => siteSettings.value.site_description || pro
         :description="seoDescription"
         canonical="/"
         :image="profile?.profile_photo"
-        :json-ld="{
-            '@context': 'https://schema.org',
-            '@type': 'Person',
-            name: profile?.name,
-            jobTitle: profile?.tagline,
-            email: profile?.email,
-        }"
     />
 
     <div class="min-h-screen bg-background overflow-x-hidden">
@@ -68,6 +61,9 @@ const seoDescription = computed(() => siteSettings.value.site_description || pro
             :bio="profile?.bio"
             :skills="skills"
             :tech-stack="techStack"
+            :education="education"
+            :certifications="certifications"
+            :experiences="experiences"
         />
 
         <Experience :experiences="experiences" :resume-url="profile?.resume_file" />
