@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ClearsPageCache;
 use App\Models\Concerns\HasStorageUrls;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class Certification extends Model
 {
-    use HasFactory, HasStorageUrls;
+    use ClearsPageCache, HasFactory, HasStorageUrls;
 
     /**
      * Get the attributes that should be cast.

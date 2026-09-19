@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ClearsPageCache;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['platform_name', 'href', 'sort_order'])]
 class SocialLink extends Model
 {
-    use HasFactory;
+    use ClearsPageCache, HasFactory;
 
     /**
      * Get the attributes that should be cast.

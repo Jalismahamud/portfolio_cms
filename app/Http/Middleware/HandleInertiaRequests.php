@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -39,7 +40,7 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
             ],
             'siteUrl' => config('seo.site_url'),
-            'siteSettings' => fn () => tap(SiteSetting::current(), function (?SiteSetting $settings): void {
+            'siteSettings' => fn () => tap(Cache::remember('site_settings', now()->addDay(), fn () => SiteSetting::current()), function (?SiteSetting $settings): void {
                 if ($settings) {
                     $settings->setAttribute('logo_url', $settings->assetUrl($settings->logo, '/logo.webp'));
                 }
