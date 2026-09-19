@@ -3,7 +3,7 @@ name: Deploy Laravel to Hostinger
 on:
   push:
     branches:
-      - jalis
+      - main
 
 jobs:
   deploy:
