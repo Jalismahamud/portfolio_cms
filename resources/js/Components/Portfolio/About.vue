@@ -1,23 +1,22 @@
 <script setup>
+import { computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { resolveSkillIcon } from '@/Composables/useFaIcon';
 import TechIcon from './TechIcon.vue';
-import ImageGallerySlider from './ImageGallerySlider.vue';
 
 const props = defineProps({
+    name: { type: String, default: '' },
+    tagline: { type: String, default: '' },
+    location: { type: String, default: '' },
+    availabilityStatus: { type: Boolean, default: true },
     bio: { type: String, default: '' },
     skills: { type: Array, default: () => [] }, // [{ icon, title, description }]
     techStack: { type: Array, default: () => [] }, // [{ name, icon, category }]
-    galleryImages: { type: Array, default: () => [] }, // [{ image, alt_text }]
-    profilePhoto: { type: String, default: null },
 });
 
 const bioParagraphs = (props.bio || '').split('\n').filter((p) => p.trim().length > 0);
 
-const sliderImages = [
-    [{ src: props.profilePhoto || '/og-image.webp', alt: 'Profile photo' }],
-    ...props.galleryImages.map((g) => ({ src: g.image, alt: g.alt_text || 'Gallery photo' })),
-];
+const focusStack = computed(() => props.techStack.slice(0, 5).map((t) => t.name).join(' · '));
 </script>
 
 <template>
@@ -59,14 +58,34 @@ const sliderImages = [
                     </div>
                 </div>
 
-                <!-- Right side - Gallery and Tech stack -->
+                <!-- Right side - Terminal snapshot and Tech stack -->
                 <div class="space-y-6 sm:space-y-8">
-                    <!-- Photo Gallery Slider -->
-                    <div v-if="sliderImages.length" class="bg-card border border-border rounded-xl p-4 sm:p-5" data-aos="fade-left">
-                        <p class="text-sm text-muted-foreground mb-4 text-center">
-                            Software Engineer
-                        </p>
-                        <ImageGallerySlider :images="sliderImages" :auto-play-interval="5000" />
+                    <!-- Developer Snapshot (terminal card) -->
+                    <div class="bg-card border border-border rounded-xl overflow-hidden" data-aos="fade-left">
+                        <div class="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted/30">
+                            <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500/70"></span>
+                            <span class="ml-2 text-xs text-muted-foreground font-mono">whoami.sh</span>
+                        </div>
+                        <div class="p-5 sm:p-6 font-mono text-xs sm:text-sm leading-relaxed">
+                            <p><span class="text-accent">$</span> whoami</p>
+                            <p class="text-foreground font-semibold mb-3 break-words">{{ name }}<span v-if="tagline"> &mdash; {{ tagline }}</span></p>
+
+                            <p><span class="text-accent">$</span> cat status.txt</p>
+                            <p class="mb-3 text-muted-foreground">
+                                <span :class="availabilityStatus ? 'text-green-400' : 'text-muted-foreground'">&#9679;</span>
+                                {{ availabilityStatus ? 'Available for new projects' : 'Currently unavailable' }}
+                                <span v-if="location" class="block">&#128205; {{ location }}</span>
+                            </p>
+
+                            <template v-if="focusStack">
+                                <p><span class="text-accent">$</span> echo $CURRENTLY_FOCUSED_ON</p>
+                                <p class="mb-3 text-muted-foreground break-words">{{ focusStack }}</p>
+                            </template>
+
+                            <p><span class="text-accent">$</span> <span class="inline-block w-2 h-4 bg-accent align-middle animate-pulse"></span></p>
+                        </div>
                     </div>
 
                     <!-- Tech Stack -->

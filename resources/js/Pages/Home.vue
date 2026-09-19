@@ -61,11 +61,13 @@ const seoDescription = computed(() => siteSettings.value.site_description || pro
         <Hero :name="profile?.name" :bio="profile?.bio" :resume-url="profile?.resume_file" />
 
         <About
+            :name="profile?.name"
+            :tagline="profile?.tagline"
+            :location="profile?.location"
+            :availability-status="profile?.availability_status"
             :bio="profile?.bio"
             :skills="skills"
             :tech-stack="techStack"
-            :gallery-images="galleryImages"
-            :profile-photo="profile?.profile_photo"
         />
 
         <Experience :experiences="experiences" :resume-url="profile?.resume_file" />
