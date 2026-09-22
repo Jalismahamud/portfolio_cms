@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'admin@gmail.com',
+            'name' => 'Jalis Mahamud',
+            'email' => 'jalismahamud31@gmail.com',
         ]);
 
         SiteSetting::firstOrCreate([], [
