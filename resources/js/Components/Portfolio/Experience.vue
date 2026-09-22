@@ -19,7 +19,7 @@ function formatDuration(exp) {
 <template>
     <section id="experience" class="section-padding bg-card/30">
         <div class="w-full sm:max-w-2xl lg:max-w-6xl 2xl:max-w-7xl mx-auto">
-            <div class="mb-16">
+            <div class="mb-16" data-aos="fade-down">
                 <h2 class="section-header">
                     <span class="section-number">02.</span> Where I've Worked
                 </h2>
@@ -29,8 +29,9 @@ function formatDuration(exp) {
                 <div
                     v-for="(exp, index) in experiences"
                     :key="exp.id"
-                    class="bg-card border border-border rounded-lg p-5 sm:p-6 lg:p-8 card-hover animate-slide-up"
-                    :style="{ animationDelay: `${index * 0.1}s` }"
+                    class="bg-card border border-border rounded-lg p-5 sm:p-6 lg:p-8 card-hover"
+                    data-aos="fade-up"
+                    :data-aos-delay="index * 100"
                 >
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Left side - Company info -->
@@ -95,7 +96,7 @@ function formatDuration(exp) {
             </div>
 
             <!-- Download CV Button -->
-            <div class="text-center mt-12">
+            <div class="text-center mt-12" data-aos="fade-up">
                 <a :href="resumeUrl" download="My-CV.pdf" class="btn-outline-cyan inline-flex items-center space-x-2">
                     <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="w-4 h-4" />
                     <span>Download Full CV</span>

@@ -63,7 +63,7 @@ function formatDate(date) {
                     <span>Back to Blog</span>
                 </Link>
 
-                <div class="mb-8">
+                <div class="mb-8" data-aos="fade-down">
                     <span v-if="post.category" class="inline-block px-3 py-1 text-xs font-medium rounded-full border bg-accent/20 text-accent border-accent/30 mb-4">
                         {{ post.category }}
                     </span>
@@ -85,16 +85,17 @@ function formatDate(date) {
                     </div>
                 </div>
 
-                <div v-if="post.image" class="mb-10 rounded-lg overflow-hidden border border-border">
+                <div v-if="post.image" class="mb-10 rounded-lg overflow-hidden border border-border" data-aos="fade-up">
                     <img :src="post.image" :alt="post.title" loading="eager" fetchpriority="high" decoding="async" width="1200" height="600" class="w-full h-auto object-cover" />
                 </div>
 
                 <article
                     class="prose prose-invert max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-accent prose-strong:text-foreground prose-code:text-accent prose-pre:bg-card prose-pre:border prose-pre:border-border prose-blockquote:border-accent prose-blockquote:text-muted-foreground"
+                    data-aos="fade-up"
                     v-html="renderedContent"
                 ></article>
 
-                <div v-if="post.tags?.length" class="mt-10 pt-8 border-t border-border">
+                <div v-if="post.tags?.length" class="mt-10 pt-8 border-t border-border" data-aos="fade-up">
                     <div class="flex flex-wrap items-center gap-2">
                         <FontAwesomeIcon :icon="faTag" class="w-4 h-4 text-muted-foreground" />
                         <span

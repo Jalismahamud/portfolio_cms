@@ -64,7 +64,7 @@ function prevImage() {
                     <span>Back to Portfolio</span>
                 </Link>
 
-                <div class="mb-12">
+                <div class="mb-12" data-aos="fade-down">
                     <h1 class="text-4xl md:text-5xl font-bold text-foreground mb-6">{{ project.title }}</h1>
                     <p class="text-xl text-muted-foreground mb-8">{{ project.description }}</p>
 
@@ -81,7 +81,7 @@ function prevImage() {
                 </div>
 
                 <!-- Image Carousel -->
-                <div v-if="project.images?.length" class="mb-12">
+                <div v-if="project.images?.length" class="mb-12" data-aos="fade-up">
                     <div class="relative bg-card border border-border rounded-lg overflow-hidden">
                         <div class="aspect-video relative">
                             <img
@@ -126,12 +126,12 @@ function prevImage() {
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     <div class="lg:col-span-2 space-y-8">
-                        <section v-if="project.long_description">
+                        <section v-if="project.long_description" data-aos="fade-right">
                             <h2 class="text-2xl font-bold text-foreground mb-4">Project Overview</h2>
                             <p class="text-muted-foreground leading-relaxed">{{ project.long_description }}</p>
                         </section>
 
-                        <section v-if="project.features?.length">
+                        <section v-if="project.features?.length" data-aos="fade-right" data-aos-delay="100">
                             <h2 class="text-2xl font-bold text-foreground mb-4">Key Features</h2>
                             <ul class="space-y-3">
                                 <li v-for="(feature, index) in project.features" :key="index" class="flex items-start space-x-3">
@@ -141,7 +141,7 @@ function prevImage() {
                             </ul>
                         </section>
 
-                        <section v-if="project.challenges?.length">
+                        <section v-if="project.challenges?.length" data-aos="fade-right" data-aos-delay="200">
                             <h2 class="text-2xl font-bold text-foreground mb-4">Challenges & Solutions</h2>
                             <ul class="space-y-3">
                                 <li v-for="(challenge, index) in project.challenges" :key="index" class="flex items-start space-x-3">
@@ -153,7 +153,7 @@ function prevImage() {
                     </div>
 
                     <div class="space-y-8">
-                        <section class="bg-card border border-border rounded-lg p-6">
+                        <section class="bg-card border border-border rounded-lg p-6" data-aos="fade-left">
                             <h3 class="text-xl font-semibold text-foreground mb-4">Technologies Used</h3>
                             <div class="flex flex-wrap gap-2">
                                 <span
@@ -166,7 +166,7 @@ function prevImage() {
                             </div>
                         </section>
 
-                        <section class="bg-card border border-border rounded-lg p-6">
+                        <section class="bg-card border border-border rounded-lg p-6" data-aos="fade-left" data-aos-delay="150">
                             <h3 class="text-xl font-semibold text-foreground mb-4">Project Links</h3>
                             <div class="space-y-3">
                                 <a v-if="project.live_url" :href="project.live_url" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-accent hover:text-accent/80 transition-colors">
