@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Cache;
 
 class CertificationsTable
 {
@@ -16,6 +17,7 @@ class CertificationsTable
         return $table
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
+            ->afterReordering(fn () => Cache::flush())
             ->columns([
                 ImageColumn::make('image'),
                 TextColumn::make('title')

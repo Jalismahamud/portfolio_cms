@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Cache;
 
 class EducationTable
 {
@@ -15,6 +16,7 @@ class EducationTable
         return $table
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
+            ->afterReordering(fn () => Cache::flush())
             ->columns([
                 TextColumn::make('degree')
                     ->searchable(),

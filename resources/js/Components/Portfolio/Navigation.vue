@@ -26,7 +26,12 @@ const isMobileMenuOpen = ref(false);
 const page = usePage();
 
 const isHome = computed(() => page.url === '/' || page.url.startsWith('/#'));
-const resolvedLogoUrl = computed(() => page.props.siteSettings?.logo_url || props.logoUrl);
+const resolvedLogoUrl = computed(() => {
+    const customLogo = page.props.siteSettings?.logo_url;
+    if (customLogo) return customLogo;
+
+    return theme.value === 'light' ? '/logo-light.webp' : props.logoUrl;
+});
 
 function splitLabel(label) {
     const [num, ...rest] = label.split('. ');
@@ -108,7 +113,7 @@ function scrollToTop() {
                             v-if="resolvedLogoUrl"
                             :src="resolvedLogoUrl"
                             alt="Logo"
-                            @error="(event) => { event.target.src = '/logo.webp'; }"
+                            @error="(event) => { event.target.src = theme === 'light' ? '/logo-light.webp' : '/logo.webp'; }"
                             width="96"
                             height="112"
                             class="h-28 w-24 sm:h-24 sm:w-20 animate-logo-orbit z-10 relative cursor-pointer"

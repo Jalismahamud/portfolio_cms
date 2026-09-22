@@ -14,6 +14,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Cache;
 
 class ImagesRelationManager extends RelationManager
 {
@@ -41,6 +42,7 @@ class ImagesRelationManager extends RelationManager
             ->recordTitleAttribute('image_path')
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
+            ->afterReordering(fn () => Cache::flush())
             ->columns([
                 ImageColumn::make('image_path'),
                 TextColumn::make('sort_order')

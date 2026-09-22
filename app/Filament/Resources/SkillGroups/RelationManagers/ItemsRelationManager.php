@@ -12,6 +12,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Cache;
 
 class ItemsRelationManager extends RelationManager
 {
@@ -37,6 +38,7 @@ class ItemsRelationManager extends RelationManager
             ->recordTitleAttribute('item_text')
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
+            ->afterReordering(fn () => Cache::flush())
             ->columns([
                 TextColumn::make('item_text')
                     ->label('Item')
