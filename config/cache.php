@@ -129,8 +129,24 @@ return [
     | storage. By default, no PHP classes will be unserialized from your
     | cache to prevent gadget chain attacks if your APP_KEY is leaked.
     |
+    | Several controllers (HomeController, ProjectController, BlogController,
+    | HandleInertiaRequests) cache whole Eloquent models via Cache::remember,
+    | so the app's own models and the collection/pivot classes they load
+    | through relationships must be allow-listed here or every cache hit
+    | comes back as __PHP_Incomplete_Class.
+    |
     */
 
-    'serializable_classes' => false,
+    'serializable_classes' => array_merge(
+        array_map(
+            fn (string $file): string => 'App\\Models\\'.pathinfo($file, PATHINFO_FILENAME),
+            glob(app_path('Models/*.php')) ?: []
+        ),
+        [
+            \Illuminate\Database\Eloquent\Collection::class,
+            \Illuminate\Support\Collection::class,
+            \Illuminate\Database\Eloquent\Relations\Pivot::class,
+        ]
+    ),
 
 ];
